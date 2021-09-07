@@ -17,10 +17,11 @@
 
   ***********************************************************************/
 
-#include <webui.h>
+#include "webui.h"
+#include "webui_logo.h"
 
-const char thingName[] = "Orbitrakr";
-const char wifiInitialApPassword[] = "password";
+static const char thingName[] = "Orbitrakr";
+static const char wifiInitialApPassword[] = "password";
 
 WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer) :
     m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
@@ -45,10 +46,18 @@ void WebUI::handleRoot(void) {
     // -- Let IotWebConf test and handle captive portal requests.
     if (m_iotWebConf.handleCaptivePortal()) { return; }
 
-    String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-    s += "<title>IotWebConf 01 Minimal</title></head><body>";
-    s += "Go to <a href='config'>configure page</a> to change settings.";
-    s += "</body></html>\n";
+    String s = IOTWEBCONF_HTML_HEAD;
+    s += "<style>" + String(IOTWEBCONF_HTML_STYLE_INNER) + "</style>";
+    s += IOTWEBCONF_HTML_HEAD_END;
+    s += IOTWEBCONF_HTML_BODY_INNER;
+    s += "<div><img display='inherit' src='data:image/png;base64," + String(logoBase64) + "'/></div><br />\n";
+    s += "<button onclick=\"window.location.href='/dashboard';\">Dashboard</button><br /><br />";
+    s += "<button onclick=\"window.location.href='/config';\">Configure</button><br /><br />";
+    s += "<button onclick=\"window.location.href='/firmware';\">Update</button><br /><br />";
+    s += "<button onclick=\"window.location.href='/restart';\">Restart</button><br /><br />";
+    s += IOTWEBCONF_HTML_END;
+    s.replace("{v}", thingName);
 
-    m_webServer->send(200, "text/html", s);
+    m_webServer->sendHeader("Content-length", String(s.length()));
+    m_webServer->send(200, "text/html; charset=UTF-8", s);
 }
