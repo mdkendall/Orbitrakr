@@ -17,26 +17,21 @@
 
   ***********************************************************************/
 
-#include <Arduino.h>
-#include <DNSServer.h>
-#include <EEPROM.h>
-#include <ESPmDNS.h>
+#ifndef WEBUI_H
+#define WEBUI_H
+
 #include <IotWebConf.h>
-#include <Webserver.h>
-#include <WiFi.h>
+#include <IotWebConfUsing.h>
 
-#include "webui.h"
+class WebUI {
+   public:
+    WebUI(DNSServer &dnsServer, WebServer &webServer);
+    void update(void);
 
-DNSServer dnsServer;
-WebServer webServer(80);
-WebUI webUI(dnsServer, webServer);
+   private:
+    IotWebConf m_iotWebConf;
+    WebServer *m_webServer;
+    void handleRoot(void);
+};
 
-void setup(void) {
-    Serial.begin(115200);
-    Serial.println();
-    Serial.println("Starting up...");
-}
-
-void loop(void) {
-    webUI.update();
-}
+#endif
