@@ -31,6 +31,7 @@ class WebUI {
    private:
     IotWebConf m_iotWebConf;
     WebServer *m_webServer;
+    iotwebconf::HtmlFormatProvider m_formatProvider;
     void handleRoot(void);
 };
 

@@ -43,19 +43,19 @@ void WebUI::update(void) {
 }
 
 void WebUI::handleRoot(void) {
+
     // -- Let IotWebConf test and handle captive portal requests.
     if (m_iotWebConf.handleCaptivePortal()) { return; }
 
-    String s = IOTWEBCONF_HTML_HEAD;
-    s += "<style>" + String(IOTWEBCONF_HTML_STYLE_INNER) + "</style>";
-    s += IOTWEBCONF_HTML_HEAD_END;
-    s += IOTWEBCONF_HTML_BODY_INNER;
+    String s = m_formatProvider.getHead();
+    s += m_formatProvider.getStyle();
+    s += m_formatProvider.getHeadEnd();
     s += "<div><img display='inherit' src='data:image/png;base64," + String(logoBase64) + "'/></div><br />\n";
     s += "<button onclick=\"window.location.href='/dashboard';\">Dashboard</button><br /><br />";
     s += "<button onclick=\"window.location.href='/config';\">Configure</button><br /><br />";
     s += "<button onclick=\"window.location.href='/firmware';\">Update</button><br /><br />";
     s += "<button onclick=\"window.location.href='/restart';\">Restart</button><br /><br />";
-    s += IOTWEBCONF_HTML_END;
+    s += m_formatProvider.getEnd();
     s.replace("{v}", thingName);
 
     m_webServer->sendHeader("Content-length", String(s.length()));
