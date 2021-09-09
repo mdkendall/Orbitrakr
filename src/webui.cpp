@@ -23,11 +23,24 @@
 static const char thingName[] = "Orbitrakr";
 static const char wifiInitialApPassword[] = "password";
 
+class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
+   protected:
+    String getBodyInner() override {
+        return
+            HtmlFormatProvider::getBodyInner() +
+            String("<div><img display='inherit' src='data:image/png;base64,") +
+            String(logoBase64) + String("'/></div><br />\n");
+    }
+};
+
+CustomHtmlFormatProvider customHtmlFormatProvider;
+
 WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer) :
     m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
     m_webServer(&webServer) {
 
     Serial.println("Web UI initialising.");
+    m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
     m_iotWebConf.init();
 
     // -- Set up required URL handlers on the web server.
@@ -47,15 +60,14 @@ void WebUI::handleRoot(void) {
     // -- Let IotWebConf test and handle captive portal requests.
     if (m_iotWebConf.handleCaptivePortal()) { return; }
 
-    String s = m_formatProvider.getHead();
-    s += m_formatProvider.getStyle();
-    s += m_formatProvider.getHeadEnd();
-    s += "<div><img display='inherit' src='data:image/png;base64," + String(logoBase64) + "'/></div><br />\n";
+    String s = m_iotWebConf.getHtmlFormatProvider()->getHead();
+    s += m_iotWebConf.getHtmlFormatProvider()->getStyle();
+    s += m_iotWebConf.getHtmlFormatProvider()->getHeadEnd();
     s += "<button onclick=\"window.location.href='/dashboard';\">Dashboard</button><br /><br />";
     s += "<button onclick=\"window.location.href='/config';\">Configure</button><br /><br />";
     s += "<button onclick=\"window.location.href='/firmware';\">Update</button><br /><br />";
     s += "<button onclick=\"window.location.href='/restart';\">Restart</button><br /><br />";
-    s += m_formatProvider.getEnd();
+    s += m_iotWebConf.getHtmlFormatProvider()->getEnd();
     s.replace("{v}", thingName);
 
     m_webServer->sendHeader("Content-length", String(s.length()));
