@@ -38,5 +38,5 @@ void setup(void) {
 }
 
 void loop(void) {
-    webUI.update();
+    webUI.doLoop();
 }

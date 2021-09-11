@@ -23,14 +23,39 @@
 #include <IotWebConf.h>
 #include <IotWebConfUsing.h>
 
+#define STRING_LEN 128
+#define NUMBER_LEN 32
+
 class WebUI {
    public:
     WebUI(DNSServer &dnsServer, WebServer &webServer);
-    void update(void);
+    void doLoop(void);
+
+    float getAzStepsPerRev() { return atof(m_azStepsPerRev); }
+    float getElStepsPerRev() { return atof(m_elStepsPerRev); }
+    float getAzSpeedMax() { return atof(m_azSpeedMax); }
+    float getElSpeedMax() { return atof(m_elSpeedMax); }
+    float getAzAccelMax() { return atof(m_azAccelMax); }
+    float getElAccelMax() { return atof(m_elAccelMax); }
 
    private:
     IotWebConf m_iotWebConf;
     WebServer *m_webServer;
+
+    char m_azStepsPerRev[NUMBER_LEN] = "";
+    char m_elStepsPerRev[NUMBER_LEN] = "";
+    char m_azSpeedMax[NUMBER_LEN] = "";
+    char m_elSpeedMax[NUMBER_LEN] = "";
+    char m_azAccelMax[NUMBER_LEN] = "";
+    char m_elAccelMax[NUMBER_LEN] = "";
+
+    iotwebconf::ParameterGroup m_groupRotator = iotwebconf::ParameterGroup("Rotator", "Rotator");
+    iotwebconf::NumberParameter m_paramAzStepsPerRev = iotwebconf::NumberParameter("Azimuth motor resolution in steps per revolution", "azStepsPerRev", m_azStepsPerRev, NUMBER_LEN, "64");
+    iotwebconf::NumberParameter m_paramElStepsPerRev = iotwebconf::NumberParameter("Elevation motor resolution in steps per revolution", "elStepsPerRev", m_elStepsPerRev, NUMBER_LEN, "64");
+    iotwebconf::NumberParameter m_paramAzSpeedMax = iotwebconf::NumberParameter("Azimuth motor max speed in steps per second", "azSpeedMax", m_azSpeedMax, NUMBER_LEN, "200");
+    iotwebconf::NumberParameter m_paramElSpeedMax = iotwebconf::NumberParameter("Elevation motor max speed in steps per second", "elSpeedMax", m_elSpeedMax, NUMBER_LEN, "200");
+    iotwebconf::NumberParameter m_paramAzAccelMax = iotwebconf::NumberParameter("Azimuth motor acceleration in steps per second per second", "azAccelMax", m_azAccelMax, NUMBER_LEN, "400");
+    iotwebconf::NumberParameter m_paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", m_elAccelMax, NUMBER_LEN, "400");
     void handleRoot(void);
 };
 
