@@ -26,10 +26,12 @@
 #include <WiFi.h>
 
 #include "webui.h"
+#include "rotator.h"
 
 DNSServer dnsServer;
 WebServer webServer(80);
 WebUI webUI(dnsServer, webServer);
+Rotator rotator;
 
 void setup(void) {
     Serial.begin(115200);
@@ -39,4 +41,5 @@ void setup(void) {
 
 void loop(void) {
     webUI.doLoop();
+    rotator.doLoop();
 }
