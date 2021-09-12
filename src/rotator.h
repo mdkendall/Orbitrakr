@@ -29,7 +29,7 @@ class RotatorAxis {
     void doLoop(void);
 
     void setTarget(float pos);     // set target position in degrees
-    void home(void);               // move to endstop
+    void home(void);               // move to endstop and set position
 
     float stepsPerRev;      // steps per revolution
     float speedMax;         // max speed in steps per second
