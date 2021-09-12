@@ -38,9 +38,9 @@ class RotatorAxis {
     float posMax;           // limit of travel in CC direction in degrees
 
    private:
-    AccelStepper m_stepper;
-    bool m_homing = false;
-    bool m_homed = false;
+    AccelStepper stepper;
+    bool homing = false;
+    bool homed = false;
 };
 
 class Rotator {

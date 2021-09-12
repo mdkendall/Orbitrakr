@@ -23,22 +23,22 @@
 
 RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
     uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4) :
-    m_stepper(motorInterfaceType, pin1, pin2, pin3, pin4) {
+    stepper(motorInterfaceType, pin1, pin2, pin3, pin4) {
 }
 
 void RotatorAxis::doLoop(void) {
-    m_stepper.run();
+    stepper.run();
 }
 
 void RotatorAxis::setTarget(float pos) {
-    if (m_homed) {
+    if (homed) {
         pos = max(min(pos, posMax), posMin);
-        m_stepper.moveTo(pos * 360. * stepsPerRev);
+        stepper.moveTo(pos * 360. * stepsPerRev);
     }
 };
 
 void RotatorAxis::home(void) {
-    m_homed = true;                 // FIXME
+    homed = true;                 // FIXME
 };
 
 /* --- Rotator --- */

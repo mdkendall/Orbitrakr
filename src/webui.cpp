@@ -40,13 +40,13 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer) :
     m_webServer(&webServer) {
 
     Serial.println("Web UI initialising.");
-    m_groupRotator.addItem(&m_paramAzStepsPerRev);
-    m_groupRotator.addItem(&m_paramAzSpeedMax);
-    m_groupRotator.addItem(&m_paramAzAccelMax);
-    m_groupRotator.addItem(&m_paramElStepsPerRev);
-    m_groupRotator.addItem(&m_paramElSpeedMax);
-    m_groupRotator.addItem(&m_paramElAccelMax);
-    m_iotWebConf.addParameterGroup(&m_groupRotator);
+    groupRotator.addItem(&paramAzStepsPerRev);
+    groupRotator.addItem(&paramAzSpeedMax);
+    groupRotator.addItem(&paramAzAccelMax);
+    groupRotator.addItem(&paramElStepsPerRev);
+    groupRotator.addItem(&paramElSpeedMax);
+    groupRotator.addItem(&paramElAccelMax);
+    m_iotWebConf.addParameterGroup(&groupRotator);
     m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
     m_iotWebConf.init();
 
