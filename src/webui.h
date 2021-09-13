@@ -28,7 +28,7 @@
 
 class WebUI {
    public:
-    WebUI(DNSServer &dnsServer, WebServer &webServer);
+    WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb);
     void doLoop(void);
 
     float getAzStepsPerRev() { return atof(azStepsPerRev); }

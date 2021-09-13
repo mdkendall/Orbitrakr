@@ -35,7 +35,7 @@ class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
 
 CustomHtmlFormatProvider customHtmlFormatProvider;
 
-WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer) :
+WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb) :
     m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
     m_webServer(&webServer) {
 
@@ -48,6 +48,7 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer) :
     groupRotator.addItem(&paramElAccelMax);
     m_iotWebConf.addParameterGroup(&groupRotator);
     m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
+    m_iotWebConf.setWifiConnectionCallback(wifiConnectionCb);
     m_iotWebConf.init();
 
     // -- Set up required URL handlers on the web server.

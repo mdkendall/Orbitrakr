@@ -18,28 +18,38 @@
   ***********************************************************************/
 
 #include <Arduino.h>
-#include <DNSServer.h>
-#include <EEPROM.h>
-#include <ESPmDNS.h>
-#include <IotWebConf.h>
-#include <Webserver.h>
 #include <WiFi.h>
+#include <DNSServer.h>
+#include <Webserver.h>
 
 #include "webui.h"
 #include "rotator.h"
+#include "rotctld.h"
 
-DNSServer dnsServer;
-WebServer webServer(80);
-WebUI webUI(dnsServer, webServer);
-Rotator rotator;
+DNSServer *dnsServer;   // DNS server for the config WiFi access point
+WebServer *webServer;   // webserver for the config web interface
+WebUI *webUI;           // config web interface
+Rotator *rotator;       // rotator motor controller
+Rotctld *rotctld;       // rotcrld-compatible network interface
+
+void onWifiConnected(void) {
+    rotctld->restart();
+}
 
 void setup(void) {
     Serial.begin(115200);
     Serial.println();
     Serial.println("Starting up...");
+
+    dnsServer = new DNSServer;
+    webServer = new WebServer(80);
+    webUI = new WebUI(*dnsServer, *webServer, onWifiConnected);
+    rotator = new Rotator;
+    rotctld = new Rotctld(4533, *rotator);
 }
 
 void loop(void) {
-    webUI.doLoop();
-    rotator.doLoop();
+    webUI->doLoop();
+    rotator->doLoop();
+    rotctld->doLoop();
 }
