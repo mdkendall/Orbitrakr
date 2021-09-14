@@ -39,6 +39,10 @@ class Rotctld : WiFiServer {
     Rotator& rotator;
     RotctldState_t state;
     uint16_t port;
+    WiFiClient client;
+    String currentLine;
+    void handleCommand(String request);
+    void reportError(int err);
 };
 
 #endif

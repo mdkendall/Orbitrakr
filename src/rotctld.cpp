@@ -18,6 +18,7 @@
   ***********************************************************************/
 
 #include "rotctld.h"
+#include "hamlib_err.h"
 
 Rotctld::Rotctld(uint16_t port, Rotator &rotator) :
     WiFiServer(port, 1),
@@ -29,14 +30,13 @@ Rotctld::Rotctld(uint16_t port, Rotator &rotator) :
 
 void Rotctld::doLoop(void) {
 
-    static WiFiClient client;
-
     switch(state) {
 
         case ROTCTLD_STATE_DISCONNECTED:
         client = available();
         if (client) {
             Serial.println("Rotctld client connected");
+            currentLine = "";
             state = ROTCTLD_STATE_CONNECTED;
         }
         break;
@@ -45,7 +45,12 @@ void Rotctld::doLoop(void) {
         if (client.connected()) {
             if (client.available()) {
                 char c = client.read();
-                Serial.write(c);
+                if (c == '\n') {
+                    handleCommand(currentLine);
+                    currentLine = "";
+                } else if (c != '\r') {
+                    currentLine += c;
+                }
             }
         } else {
             Serial.println("Rotctld client disconnected");
@@ -60,4 +65,26 @@ void Rotctld::restart(void) {
     state = ROTCTLD_STATE_DISCONNECTED;
     Serial.println("Rotctld restarted");
     begin(port, 1);
+}
+
+void Rotctld::handleCommand(String request) {
+
+    float az, el;
+
+    Serial.println(String("Rotctld received ") + request);
+
+    if (strcmp(request.c_str(), "p") == 0) {
+        client.println(String(rotator.azAxis.getPosition(), 2));
+        client.println(String(rotator.elAxis.getPosition(), 2));
+    } else if (sscanf(request.c_str(), "P %f %f", &az, &el) == 2) {
+        rotator.azAxis.setTarget(az);
+        rotator.elAxis.setTarget(el);
+        reportError(RIG_OK);
+    } else {
+        reportError(RIG_EPROTO);
+    }
+}
+
+void Rotctld::reportError(int error) {
+    client.println(String("RPRT " + String(-error)));
 }
