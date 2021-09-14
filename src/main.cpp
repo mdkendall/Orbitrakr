@@ -46,6 +46,10 @@ void setup(void) {
     webUI = new WebUI(*dnsServer, *webServer, onWifiConnected);
     rotator = new Rotator;
     rotctld = new Rotctld(4533, *rotator);
+
+    // FIXME
+    rotator->azAxis.home();
+    rotator->elAxis.home();
 }
 
 void loop(void) {
