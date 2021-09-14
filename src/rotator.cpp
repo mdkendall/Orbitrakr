@@ -33,9 +33,15 @@ void RotatorAxis::doLoop(void) {
 void RotatorAxis::setTarget(float pos) {
     if (homed) {
         pos = max(min(pos, posMax), posMin);
-        stepper.moveTo(pos * 360. * stepsPerRev);
+        stepper.setMaxSpeed(speedMax);
+        stepper.setAcceleration(accelMax);
+        stepper.moveTo(stepsPerRev * pos / 360.);
     }
 };
+
+float RotatorAxis::getPosition(void) {
+    return (stepper.currentPosition() / stepsPerRev) * 360.;
+}
 
 void RotatorAxis::home(void) {
     homed = true;                 // FIXME
