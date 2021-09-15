@@ -44,12 +44,14 @@ void Rotctld::doLoop(void) {
         case ROTCTLD_STATE_CONNECTED:
         if (client.connected()) {
             if (client.available()) {
-                char c = client.read();
-                if (c == '\n') {
-                    handleCommand(currentLine);
-                    currentLine = "";
-                } else if (c != '\r') {
-                    currentLine += c;
+                int c = client.read();
+                if (c > 0) {
+                    if (c == '\n') {
+                        handleCommand(currentLine);
+                        currentLine = "";
+                    } else if (c != '\r') {
+                        currentLine += (char)c;
+                    }
                 }
             }
         } else {
@@ -69,13 +71,14 @@ void Rotctld::restart(void) {
 
 void Rotctld::handleCommand(String request) {
 
+    char s[32];
     float az, el;
 
     Serial.println(String("Rotctld received ") + request);
 
     if (strcmp(request.c_str(), "p") == 0) {
-        client.println(String(rotator.azAxis.getPosition(), 2));
-        client.println(String(rotator.elAxis.getPosition(), 2));
+        snprintf(s, sizeof(s), "%.2f\r\n%.2f\r\n", rotator.azAxis.getPosition(), rotator.elAxis.getPosition());
+        client.write(s);
     } else if (sscanf(request.c_str(), "P %f %f", &az, &el) == 2) {
         rotator.azAxis.setTarget(az);
         rotator.elAxis.setTarget(el);
@@ -86,5 +89,5 @@ void Rotctld::handleCommand(String request) {
 }
 
 void Rotctld::reportError(int error) {
-    client.println(String("RPRT " + String(-error)));
+    client.print(String("RPRT ") + String(-error) + String("\r\n"));
 }
