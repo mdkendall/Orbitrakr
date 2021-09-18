@@ -47,6 +47,10 @@ void RotatorAxis::home(void) {
     homed = true;                 // FIXME
 };
 
+void RotatorAxis::stop(void) {
+    stepper.stop();
+}
+
 /* --- Rotator --- */
 
 Rotator::Rotator(void) :
