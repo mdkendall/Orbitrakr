@@ -74,7 +74,7 @@ void Rotctld::handleCommand(String request) {
     char s[32];
     float az, el;
 
-    Serial.println(String("xRotctld received ") + request);
+    Serial.println(String("Rotctld received ") + request);
 
     if ((strcmp(request.c_str(), "R") == 0) ||
         (strcmp(request.c_str(), "reset") == 0)) {
