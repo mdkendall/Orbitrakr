@@ -37,6 +37,7 @@ class WebUI {
     float getElSpeedMax() { return atof(elSpeedMax); }
     float getAzAccelMax() { return atof(azAccelMax); }
     float getElAccelMax() { return atof(elAccelMax); }
+    char *getThingName() { return m_iotWebConf.getThingName(); }
 
    private:
     IotWebConf m_iotWebConf;

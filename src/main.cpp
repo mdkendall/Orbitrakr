@@ -19,6 +19,7 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include <DNSServer.h>
 #include <Webserver.h>
 
@@ -33,6 +34,12 @@ Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
 
 void onWifiConnected(void) {
+    HTTPClient http;
+    char url[256];
+    uint64_t chipid = ESP.getEfuseMac();
+    snprintf(url, sizeof(url), "http://www.thingpings.com/api/ping?l=%s&v=Orbitrakr&p=%s&s=%04X%08X",
+    WiFi.localIP().toString().c_str(), webUI->getThingName(), (uint16_t)(chipid>>32), (uint32_t)chipid);
+    http.begin(url); http.GET(); http.end();
     rotctld->restart();
 }
 
