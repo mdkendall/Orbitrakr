@@ -91,7 +91,7 @@ typedef struct elsetrec
          xl4    , xlamo  , zmol   , zmos     , atime  , xli     , xni;
 
   double a, altp, alta, epochdays, jdsatepoch, jdsatepochF, nddot, ndot,
-	     bstar, rcse, inclo, nodeo, ecco, argpo, mo, no_kozai;
+         bstar, rcse, inclo, nodeo, ecco, argpo, mo, no_kozai;
   // sgp4fix add new variables from tle
   char  classification, intldesg[11];
   int   ephtype;
@@ -116,115 +116,115 @@ typedef struct elsetrec
 namespace SGP4Funcs 
 {
 
-	//	public class SGP4Class
-	//	{
+    //  public class SGP4Class
+    //  {
 
-	bool sgp4init
-		(
-		gravconsttype whichconst, char opsmode, const char satn[9], const double epoch,
-		const double xbstar, const double xndot, const double xnddot, const double xecco, const double xargpo,
-		const double xinclo, const double xmo, const double xno,
-		const double xnodeo, elsetrec& satrec
-		);
+    bool sgp4init
+        (
+        gravconsttype whichconst, char opsmode, const char satn[9], const double epoch,
+        const double xbstar, const double xndot, const double xnddot, const double xecco, const double xargpo,
+        const double xinclo, const double xmo, const double xno,
+        const double xnodeo, elsetrec& satrec
+        );
 
-	bool sgp4
-		(
-		// no longer need gravconsttype whichconst, all data contained in satrec
-		elsetrec& satrec, double tsince,
-		double r[3], double v[3]
-		);
+    bool sgp4
+        (
+        // no longer need gravconsttype whichconst, all data contained in satrec
+        elsetrec& satrec, double tsince,
+        double r[3], double v[3]
+        );
 
-	void getgravconst
-		(
-		gravconsttype whichconst,
-		double& tumin,
-		double& mus,
-		double& radiusearthkm,
-		double& xke,
-		double& j2,
-		double& j3,
-		double& j4,
-		double& j3oj2
-		);
+    void getgravconst
+        (
+        gravconsttype whichconst,
+        double& tumin,
+        double& mus,
+        double& radiusearthkm,
+        double& xke,
+        double& j2,
+        double& j3,
+        double& j4,
+        double& j3oj2
+        );
 
-	// older sgp4io methods
-	void twoline2rv
-		(
-		char      longstr1[130], char longstr2[130],
-		char      typerun, char typeinput, char opsmode,
-		gravconsttype       whichconst,
-		double& startmfe, double& stopmfe, double& deltamin,
-		elsetrec& satrec
-		);
+    // older sgp4io methods
+    void twoline2rv
+        (
+        char      longstr1[130], char longstr2[130],
+        char      typerun, char typeinput, char opsmode,
+        gravconsttype       whichconst,
+        double& startmfe, double& stopmfe, double& deltamin,
+        elsetrec& satrec
+        );
 
-	// older sgp4ext methods
-	double  gstime_SGP4
-		(
-		double jdut1
-		);
+    // older sgp4ext methods
+    double  gstime_SGP4
+        (
+        double jdut1
+        );
 
-	double  sgn_SGP4
-		(
-		double x
-		);
+    double  sgn_SGP4
+        (
+        double x
+        );
 
-	double  mag_SGP4
-		(
-		double x[3]
-		);
+    double  mag_SGP4
+        (
+        double x[3]
+        );
 
-	void    cross_SGP4
-		(
-		double vec1[3], double vec2[3], double outvec[3]
-		);
+    void    cross_SGP4
+        (
+        double vec1[3], double vec2[3], double outvec[3]
+        );
 
-	double  dot_SGP4
-		(
-		double x[3], double y[3]
-		);
+    double  dot_SGP4
+        (
+        double x[3], double y[3]
+        );
 
-	double  angle_SGP4
-		(
-		double vec1[3],
-		double vec2[3]
-		);
+    double  angle_SGP4
+        (
+        double vec1[3],
+        double vec2[3]
+        );
 
-	void    newtonnu_SGP4
-		(
-		double ecc, double nu,
-		double& e0, double& m
-		);
+    void    newtonnu_SGP4
+        (
+        double ecc, double nu,
+        double& e0, double& m
+        );
 
-	double  asinh_SGP4
-		(
-		double xval
-		);
+    double  asinh_SGP4
+        (
+        double xval
+        );
 
-	void    rv2coe_SGP4
-		(
-		double r[3], double v[3], double mus,
-		double& p, double& a, double& ecc, double& incl, double& omega, double& argp,
-		double& nu, double& m, double& arglat, double& truelon, double& lonper
-		);
+    void    rv2coe_SGP4
+        (
+        double r[3], double v[3], double mus,
+        double& p, double& a, double& ecc, double& incl, double& omega, double& argp,
+        double& nu, double& m, double& arglat, double& truelon, double& lonper
+        );
 
-	void    jday_SGP4
-		(
-		int year, int mon, int day, int hr, int minute, double sec,
-		double& jd, double& jdFrac
-		);
+    void    jday_SGP4
+        (
+        int year, int mon, int day, int hr, int minute, double sec,
+        double& jd, double& jdFrac
+        );
 
-	void    days2mdhms_SGP4
-		(
-		int year, double days,
-		int& mon, int& day, int& hr, int& minute, double& sec
-		);
+    void    days2mdhms_SGP4
+        (
+        int year, double days,
+        int& mon, int& day, int& hr, int& minute, double& sec
+        );
 
-	void    invjday_SGP4
-		(
-		double jd, double jdFrac,
-		int& year, int& mon, int& day,
-		int& hr, int& minute, double& sec
-		);
+    void    invjday_SGP4
+        (
+        double jd, double jdFrac,
+        int& year, int& mon, int& day,
+        int& hr, int& minute, double& sec
+        );
 
 
 }  // namespace
