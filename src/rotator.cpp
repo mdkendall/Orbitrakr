@@ -28,11 +28,15 @@ RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
 
 void RotatorAxis::doLoop(void) {
     stepper.run();
+    if (stepper.distanceToGo() == 0) {
+        stepper.disableOutputs();
+    }
 }
 
 void RotatorAxis::setTarget(float pos) {
     if (homed) {
         pos = max(min(pos, posMax), posMin);
+        stepper.enableOutputs();
         stepper.setMaxSpeed(speedMax);
         stepper.setAcceleration(accelMax);
         stepper.moveTo(stepsPerRev * pos / 360.);
