@@ -66,6 +66,16 @@ Rotator::Rotator(void) :
     azAxis.accelMax = 50; elAxis.accelMax = 50;
     azAxis.posMin = -180.0; azAxis.posMax = 180.0;
     elAxis.posMin = 0.0; elAxis.posMax = 90.0;
+
+    xTaskCreatePinnedToCore(task, "Rotator", 2048, this, 3, &taskHandle, 1);
+}
+
+void Rotator::task(void *param) {
+    Rotator *rotator = (Rotator*)param;
+    while (true) {
+        rotator->doLoop();
+        vTaskDelay(1);
+    }
 }
 
 void Rotator::doLoop(void) {

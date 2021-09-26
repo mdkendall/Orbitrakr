@@ -48,10 +48,15 @@ class RotatorAxis {
 class Rotator {
    public:
     Rotator();
-    void doLoop(void);
 
     RotatorAxis azAxis;     // azimuth axis
     RotatorAxis elAxis;     // elevation axis
+
+   private:
+    static void task(void *param);
+    void doLoop(void);
+
+    TaskHandle_t taskHandle;
 };
 
 #endif

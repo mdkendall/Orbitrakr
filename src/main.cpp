@@ -56,6 +56,5 @@ void setup(void) {
 
 void loop(void) {
     webUI->doLoop();
-    rotator->doLoop();
     rotctld->doLoop();
 }
