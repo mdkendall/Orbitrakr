@@ -23,12 +23,14 @@
 #include <IotWebConf.h>
 #include <IotWebConfUsing.h>
 
+#include "rotator.h"
+
 #define STRING_LEN 128
 #define NUMBER_LEN 32
 
 class WebUI {
    public:
-    WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb);
+    WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::function<void()> wifiConnectionCb);
     void doLoop(void);
 
     float getAzStepsPerRev() { return atof(azStepsPerRev); }
@@ -42,6 +44,7 @@ class WebUI {
    private:
     IotWebConf m_iotWebConf;
     WebServer *m_webServer;
+    Rotator *m_rotator;
 
     char azStepsPerRev[NUMBER_LEN] = "";
     char elStepsPerRev[NUMBER_LEN] = "";
@@ -58,6 +61,7 @@ class WebUI {
     iotwebconf::NumberParameter paramAzAccelMax = iotwebconf::NumberParameter("Azimuth motor acceleration in steps per second per second", "azAccelMax", azAccelMax, NUMBER_LEN, "400");
     iotwebconf::NumberParameter paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", elAccelMax, NUMBER_LEN, "400");
     void handleRoot(void);
+    void handleDashboard(void);
 };
 
 #endif

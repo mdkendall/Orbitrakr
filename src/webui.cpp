@@ -25,19 +25,27 @@ static const char wifiInitialApPassword[] = "password";
 
 class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
    protected:
+   // Add logo to the top of each page
     String getBodyInner() override {
         return
             HtmlFormatProvider::getBodyInner() +
             String("<div><img display='inherit' src='data:image/png;base64,") +
             String(logoBase64) + String("'/></div><br />\n");
     }
+    // Nicer padding on the config page
+    String getStyle() override {
+        String s = HtmlFormatProvider::getStyle();
+        s.replace("margin: 0px", "margin-bottom: 20px");
+        return s;
+    }
 };
 
 CustomHtmlFormatProvider customHtmlFormatProvider;
 
-WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb) :
+WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::function<void()> wifiConnectionCb) :
     m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
-    m_webServer(&webServer) {
+    m_webServer(&webServer),
+    m_rotator(&rotator) {
 
     Serial.println("Web UI initialising.");
     groupRotator.addItem(&paramAzStepsPerRev);
@@ -53,6 +61,7 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
 
     // -- Set up required URL handlers on the web server.
     m_webServer->on("/", [this] { handleRoot(); });
+    m_webServer->on("/dashboard", [this] { handleDashboard(); });
     m_webServer->on("/config", [this] { m_iotWebConf.handleConfig(); });
     m_webServer->onNotFound([this] { m_iotWebConf.handleNotFound(); });
 
@@ -75,6 +84,27 @@ void WebUI::handleRoot(void) {
     s += "<button onclick=\"window.location.href='/config';\">Configure</button><br /><br />";
     s += "<button onclick=\"window.location.href='/firmware';\">Update</button><br /><br />";
     s += "<button onclick=\"window.location.href='/restart';\">Restart</button><br /><br />";
+    s += m_iotWebConf.getHtmlFormatProvider()->getEnd();
+    s.replace("{v}", thingName);
+
+    m_webServer->sendHeader("Content-length", String(s.length()));
+    m_webServer->send(200, "text/html; charset=UTF-8", s);
+}
+
+void WebUI::handleDashboard(void) {
+
+    // -- Let IotWebConf test and handle captive portal requests.
+    if (m_iotWebConf.handleCaptivePortal()) { return; }
+
+    String s = m_iotWebConf.getHtmlFormatProvider()->getHead();
+    s += m_iotWebConf.getHtmlFormatProvider()->getStyle();
+    s += m_iotWebConf.getHtmlFormatProvider()->getHeadEnd();
+    s += "<h2>Rotator</h2>";
+    s += "<div>Current position: Az ";
+    s += String(m_rotator->azAxis.getPosition());
+    s += " El ";
+    s += String(m_rotator->elAxis.getPosition());
+    s += "</div>";
     s += m_iotWebConf.getHtmlFormatProvider()->getEnd();
     s.replace("{v}", thingName);
 
