@@ -62,6 +62,7 @@ class WebUI {
     iotwebconf::NumberParameter paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", elAccelMax, NUMBER_LEN, "400");
     void handleRoot(void);
     void handleDashboard(void);
+    void handleApi(void);
 };
 
 #endif

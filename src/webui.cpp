@@ -19,6 +19,9 @@
 
 #include "webui.h"
 #include "webui_logo.h"
+#include "webui_html.h"
+
+#include <ArduinoJson.h>
 
 static const char thingName[] = "Orbitrakr";
 static const char wifiInitialApPassword[] = "password";
@@ -62,6 +65,7 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::
     // -- Set up required URL handlers on the web server.
     m_webServer->on("/", [this] { handleRoot(); });
     m_webServer->on("/dashboard", [this] { handleDashboard(); });
+    m_webServer->on("/api", [this] { handleApi(); });
     m_webServer->on("/config", [this] { m_iotWebConf.handleConfig(); });
     m_webServer->onNotFound([this] { m_iotWebConf.handleNotFound(); });
 
@@ -87,7 +91,6 @@ void WebUI::handleRoot(void) {
     s += m_iotWebConf.getHtmlFormatProvider()->getEnd();
     s.replace("{v}", thingName);
 
-    m_webServer->sendHeader("Content-length", String(s.length()));
     m_webServer->send(200, "text/html; charset=UTF-8", s);
 }
 
@@ -98,16 +101,25 @@ void WebUI::handleDashboard(void) {
 
     String s = m_iotWebConf.getHtmlFormatProvider()->getHead();
     s += m_iotWebConf.getHtmlFormatProvider()->getStyle();
+    s += "<script src=\"https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js\"></script>";
+    s += "<script src=\"https://cdn.jsdelivr.net/npm/axios@0.21.4\"></script>";
     s += m_iotWebConf.getHtmlFormatProvider()->getHeadEnd();
-    s += "<h2>Rotator</h2>";
-    s += "<div>Current position: Az ";
-    s += String(m_rotator->azAxis.getPosition());
-    s += " El ";
-    s += String(m_rotator->elAxis.getPosition());
-    s += "</div>";
+    s += dashboardHtml;
+    s += dashboardScript;
     s += m_iotWebConf.getHtmlFormatProvider()->getEnd();
     s.replace("{v}", thingName);
 
-    m_webServer->sendHeader("Content-length", String(s.length()));
     m_webServer->send(200, "text/html; charset=UTF-8", s);
+}
+
+void WebUI::handleApi(void) {
+
+    String s;
+    DynamicJsonDocument doc(256);
+    doc["rotator"]["az"] = m_rotator->azAxis.getPosition();
+    doc["rotator"]["el"] = m_rotator->elAxis.getPosition();
+    serializeJson(doc, s);
+
+    m_webServer->sendHeader("Access-Control-Allow-Origin", "*");
+    m_webServer->send(200, "application/json; charset=UTF-8", s);
 }
