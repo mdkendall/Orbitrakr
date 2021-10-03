@@ -59,7 +59,7 @@ void RotatorAxis::stop(void) {
 
 Rotator::Rotator(void) :
     azAxis(AccelStepper::HALF4WIRE, 13, 14, 12, 27),
-    elAxis(AccelStepper::HALF4WIRE, 26, 33, 25, 32) {
+    elAxis(AccelStepper::HALF4WIRE, 32, 25, 33, 26) {
 
     azAxis.stepsPerRev = 4075.7728; elAxis.stepsPerRev = 4075.7728;
     azAxis.speedMax = 200; elAxis.speedMax = 200;
