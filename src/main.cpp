@@ -24,6 +24,7 @@
 #include "webui.h"
 #include "rotator.h"
 #include "rotctld.h"
+#include "predictor.h"
 #include "thingpings.h"
 
 DNSServer *dnsServer;   // DNS server for the config WiFi access point
@@ -31,6 +32,7 @@ WebServer *webServer;   // webserver for the config web interface
 WebUI *webUI;           // config web interface
 Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
+Predictor *predictor;   // satellite predictor
 
 void onWifiConnected(void) {
 
@@ -48,6 +50,7 @@ void setup(void) {
     dnsServer = new DNSServer;
     webServer = new WebServer(80);
     webUI = new WebUI(*dnsServer, *webServer, *rotator, onWifiConnected);
+    predictor = new Predictor(46494);
 
     // FIXME
     rotator->azAxis.home();
