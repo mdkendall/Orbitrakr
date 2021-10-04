@@ -1,17 +1,35 @@
+
+/*  This file is based on the SGP4 code by David Vallado, et al.,
+ *  as described in "Revisiting Spacetrack Report #3"
+ *  https://celestrak.com/publications/AIAA/2006-6753/
+ *
+ *  The starting point was the associated C++ code archive, in which the
+ *  SGP4.cpp file contains a reworking of the original sgp4unit, sgp4io
+ *  and sgp4ext files that may be found elsewhere.
+ *
+ *  The code has been modified to make it suitable for embedded use. In
+ *  particular the command line interactivity has been replaced with fixed
+ *  functionality; code associated with building for non-applicable platforms
+ *  has been removed; and now-unnecessary function parameters have been
+ *  pruned. The math has not been altered.
+ *
+ *  The comments below are all from the original.
+ */
+
 /*     ----------------------------------------------------------------
 *
 *                               sgp4unit.cpp
 *
-*    this file contains the sgp4 procedures for analytical propagation
-*    of a satellite. the code was originally released in the 1980 and 1986
-*    spacetrack papers. a detailed discussion of the theory and history
-*    may be found in the 2006 aiaa paper by vallado, crawford, hujsak,
-*    and kelso.
+*    This file contains the sgp4 procedures for analytical propagation
+*    of a satellite. The code was originally released in the 1980 and 1986
+*    spacetrack papers. A detailed discussion of the theory and history
+*    may be found in the 2006 aiaa paper by Vallado, Crawford, Hujsak,
+*    and Kelso.
 *
-*                            companion code for
-*               fundamentals of astrodynamics and applications
+*                            Companion code for
+*               Fundamentals of Astrodynamics and Applications
 *                                    2013
-*                              by david vallado
+*                              by David Vallado
 *
 *     (w) 719-573-2600, email dvallado@agi.com, davallado@gmail.com
 *
@@ -58,11 +76,6 @@
 #include "SGP4.h"
 
 #define pi 3.14159265358979323846
-
-// define global variables here, not in .h
-// use extern in main
-char help = 'n';
-FILE *dbgfile;
 
 namespace SGP4Funcs
 {
@@ -156,10 +169,10 @@ namespace SGP4Funcs
 
     /* -----------------------------------------------------------------------------
     *
-    *                           procedure dpper
+    *                           Procedure dpper
     *
-    *  this procedure provides deep space long period periodic contributions
-    *    to the mean elements.  by design, these periodics are zero at epoch.
+    *    This procedure provides deep space long period periodic contributions
+    *    to the mean elements.  By design, these periodics are zero at epoch.
     *    this used to be dscom which included initialization, but it's really a
     *    recurring function.
     *
@@ -344,16 +357,14 @@ namespace SGP4Funcs
                 argpp = xls - mp - cosip * nodep;
             }
         }   // if init == 'n'
-
-        //#include "debug1.cpp"
     }  // dpper
 
     /*-----------------------------------------------------------------------------
     *
-    *                           procedure dscom
+    *                           Procedure dscom
     *
-    *  this procedure provides deep space common items used by both the secular
-    *    and periodics subroutines.  input is provided as shown. this routine
+    *    This procedure provides deep space common items used by both the secular
+    *    and periodics subroutines.  Input is provided as shown. This routine
     *    used to be called dpper, but the functions inside weren't well organized.
     *
     *  author        : david vallado                  719-573-2600   28 jun 2005
@@ -613,14 +624,13 @@ namespace SGP4Funcs
         xh2 = -2.0 * s2 * z22;
         xh3 = -2.0 * s2 * (z23 - z21);
 
-        //#include "debug2.cpp"
     }  // dscom
 
     /*-----------------------------------------------------------------------------
     *
-    *                           procedure dsinit
+    *                           Procedure dsinit
     *
-    *  this procedure provides deep space contributions to mean motion dot due
+    *    This procedure provides deep space contributions to mean motion dot due
     *    to geopotential resonance with half day and one day orbits.
     *
     *  author        : david vallado                  719-573-2600   28 jun 2005
@@ -919,17 +929,15 @@ namespace SGP4Funcs
             atime = 0.0;
             nm = no + dndt;
         }
-
-        //#include "debug3.cpp"
     }  // dsinit
 
     /*-----------------------------------------------------------------------------
     *
-    *                           procedure dspace
+    *                           Procedure dspace
     *
-    *  this procedure provides deep space contributions to mean elements for
-    *    perturbing third body.  these effects have been averaged over one
-    *    revolution of the sun and moon.  for earth resonance effects, the
+    *    This procedure provides deep space contributions to mean elements for
+    *    perturbing third body.  These effects have been averaged over one
+    *    revolution of the sun and moon.  For earth resonance effects, the
     *    effects have been averaged over no revolutions of the satellite.
     *    (mean motion)
     *
@@ -1141,15 +1149,13 @@ namespace SGP4Funcs
             }
             nm = no + dndt;
         }
-
-        //#include "debug4.cpp"
     }  // dsspace
 
     /*-----------------------------------------------------------------------------
     *
-    *                           procedure initl
+    *                           Procedure initl
     *
-    *  this procedure initializes the spg4 propagator. all the initialization is
+    *    This procedure initializes the spg4 propagator. All the initialization is
     *    consolidated here instead of having multiple loops inside other routines.
     *
     *  author        : david vallado                  719-573-2600   28 jun 2005
@@ -1271,14 +1277,13 @@ namespace SGP4Funcs
         //    else
         gsto = gstime_SGP4(epoch + 2433281.5);
 
-        //#include "debug5.cpp"
     }  // initl
 
     /*-----------------------------------------------------------------------------
     *
-    *                             procedure sgp4init
+    *                             rocedure sgp4init
     *
-    *  this procedure initializes variables for sgp4.
+    *  This procedure initializes variables for sgp4.
     *
     *  author        : david vallado                  719-573-2600   28 jun 2005
     *
@@ -1430,11 +1435,7 @@ namespace SGP4Funcs
         satrec.error = 0;
         satrec.operationmode = opsmode;
         // new alpha5 or 9-digit number
-        #ifdef _MSC_VER
-                           strcpy_s(satrec.satnum, 6 * sizeof(char), satn);
-        #else
-                           strcpy(satrec.satnum, satn);
-        #endif
+        strcpy(satrec.satnum, satn);
 
         // sgp4fix - note the following variables are also passed directly via satrec.
         // it is possible to streamline the sgp4init call by deleting the "x"
@@ -1650,18 +1651,17 @@ namespace SGP4Funcs
 
         satrec.init = 'n';
 
-        //#include "debug6.cpp"
         //sgp4fix return boolean. satrec.error contains any error codes
         return true;
     }  // sgp4init
 
     /*-----------------------------------------------------------------------------
     *
-    *                             procedure sgp4
+    *                             Procedure sgp4
     *
-    *  this procedure is the sgp4 prediction model from space command. this is an
+    *    This procedure is the sgp4 prediction model from space command. This is an
     *    updated and combined version of sgp4 and sdp4, which were originally
-    *    published separately in spacetrack report #3. this version follows the
+    *    published separately in spacetrack report #3. This version follows the
     *    methodology from the aiaa paper (2006) describing the history and
     *    development of the code.
     *
@@ -2033,20 +2033,16 @@ namespace SGP4Funcs
             return false;
         }
 
-        //#include "debug7.cpp"
         return true;
     }  // sgp4
 
 
-
-
-
     /* -----------------------------------------------------------------------------
     *
-    *                           function getgravconst
+    *                           Function getgravconst
     *
-    *  this function gets constants for the propagator. note that mu is identified to
-    *    facilitiate comparisons with newer models. the common useage is wgs72.
+    *    This function gets constants for the propagator. Note that mu is identified to
+    *    facilitiate comparisons with newer models. The common useage is wgs72.
     *
     *  author        : david vallado                  719-573-2600   21 jul 2006
     *
@@ -2121,7 +2117,7 @@ namespace SGP4Funcs
             j3oj2 = j3 / j2;
             break;
         default:
-            fprintf(stderr, "unknown gravity option (%d)\n", whichconst);
+            // fprintf(stderr, "unknown gravity option (%d)\n", whichconst);
             break;
         }
 
@@ -2130,27 +2126,18 @@ namespace SGP4Funcs
     // older sgp4io methods
     /* -----------------------------------------------------------------------------
     *
-    *                           function twoline2rv
+    *                           Function twoline2rv
     *
-    *  this function converts the two line element set character string data to
-    *    variables and initializes the sgp4 variables. several intermediate varaibles
-    *    and quantities are determined. note that the result is a structure so multiple
-    *    satellites can be processed simaltaneously without having to reinitialize. the
-    *    verification mode is an important option that permits quick checks of any
-    *    changes to the underlying technical theory. this option works using a
-    *    modified tle file in which the start, stop, and delta time values are
-    *    included at the end of the second line of data. this only works with the
-    *    verification mode. the catalog mode simply propagates from -1440 to 1440 min
-    *    from epoch and is useful when performing entire catalog runs.
+    *    This function converts the two line element set character string data to
+    *    variables and initializes the sgp4 variables. Several intermediate varaibles
+    *    and quantities are determined. Note that the result is a structure so multiple
+    *    satellites can be processed simaltaneously without having to reinitialize.
     *
     *  author        : david vallado                  719-573-2600    1 mar 2001
     *
     *  inputs        :
     *    longstr1    - first line of the tle
     *    longstr2    - second line of the tle
-    *    typerun     - type of run                    verification 'v', catalog 'c',
-    *                                                 manual 'm'
-    *    typeinput   - type of manual input           mfe 'm', epoch 'e', dayofyr 'd'
     *    opsmode     - mode of operation afspc or improved 'a', 'i'
     *    whichconst  - which set of constants to use  72, 84
     *
@@ -2171,9 +2158,8 @@ namespace SGP4Funcs
     void twoline2rv
         (
         char longstr1[130], char longstr2[130],
-        char typerun, char typeinput, char opsmode,
+        char opsmode,
         gravconsttype whichconst,
-        double& startmfe, double& stopmfe, double& deltamin,
         elsetrec& satrec
         )
     {
@@ -2181,9 +2167,6 @@ namespace SGP4Funcs
         const double xpdotp = 1440.0 / (2.0 *pi);  // 229.1831180523293
 
         double sec;
-        double startsec, stopsec, startdayofyr, stopdayofyr, jdstart, jdstop, jdstartF, jdstopF;
-        int startyear, stopyear, startmon, stopmon, startday, stopday,
-            starthr, stophr, startmin, stopmin;
         int cardnumb, j;
         // sgp4fix include in satrec
         // long revnum = 0, elnum = 0;
@@ -2225,77 +2208,25 @@ namespace SGP4Funcs
             longstr1[62] = '0';
         if (longstr1[68] == ' ')
             longstr1[68] = '0';
-#ifdef _MSC_VER // chk if compiling in MSVS c++
-        sscanf_s(longstr1, "%2d %5s %1c %10s %2d %12lf %11lf %7lf %2d %7lf %2d %2d %6ld ",
-            &cardnumb, &satrec.satnum, 6 * sizeof(char), &satrec.classification, sizeof(char), &satrec.intldesg, 11 * sizeof(char), &satrec.epochyr,
-            &satrec.epochdays, &satrec.ndot, &satrec.nddot, &nexp, &satrec.bstar, &ibexp, &satrec.ephtype, &satrec.elnum);
-#else
+
         sscanf(longstr1, "%2d %5s %1c %10s %2d %12lf %11lf %7lf %2d %7lf %2d %2d %6ld ",
             &cardnumb, &satrec.satnum, &satrec.classification, &satrec.intldesg, &satrec.epochyr,
             &satrec.epochdays, &satrec.ndot, &satrec.nddot, &nexp, &satrec.bstar,
             &ibexp, &satrec.ephtype, &satrec.elnum);
-#endif
-        if (typerun == 'v')  // run for specified times from the file
+
+        if (longstr2[52] == ' ')
         {
-            if (longstr2[52] == ' ')
-            {
-#ifdef _MSC_VER
-                sscanf_s(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %10lf %6ld %lf %lf %lf \n",
-                    &cardnumb, &satrec.satnum, 6 * sizeof(char), &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum, &startmfe, &stopmfe, &deltamin);
-#else
-                sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %10lf %6ld %lf %lf %lf \n",
-                    &cardnumb, &satrec.satnum, &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum, &startmfe, &stopmfe, &deltamin);
-#endif
-            }
-            else
-            {
-#ifdef _MSC_VER
-                sscanf_s(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %11lf %6ld %lf %lf %lf \n",
-                    &cardnumb, &satrec.satnum, 6 * sizeof(char), &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum, &startmfe, &stopmfe, &deltamin);
-#else
-                sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %11lf %6ld %lf %lf %lf \n",
-                    &cardnumb, &satrec.satnum, &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum, &startmfe, &stopmfe, &deltamin);
-#endif
-            }
+            sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %10lf %6ld \n",
+                &cardnumb, &satrec.satnum, &satrec.inclo,
+                &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
+                &satrec.revnum);
         }
-        else  // simply run -1 day to +1 day or user input times
+        else
         {
-            if (longstr2[52] == ' ')
-            {
-#ifdef _MSC_VER
-                sscanf_s(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %10lf %6ld \n",
-                    &cardnumb, &satrec.satnum, 6 * sizeof(char), &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum);
-#else
-                sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %10lf %6ld \n",
-                    &cardnumb, &satrec.satnum, &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum);
-#endif
-            }
-            else
-            {
-#ifdef _MSC_VER
-                sscanf_s(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %11lf %6ld \n",
-                    &cardnumb, &satrec.satnum, 6 * sizeof(char), &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum);
-#else
-                sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %11lf %6ld \n",
-                    &cardnumb, &satrec.satnum, &satrec.inclo,
-                    &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
-                    &satrec.revnum);
-#endif
-            }
+            sscanf(longstr2, "%2d %5s %9lf %9lf %8lf %9lf %9lf %11lf %6ld \n",
+                &cardnumb, &satrec.satnum, &satrec.inclo,
+                &satrec.nodeo, &satrec.ecco, &satrec.argpo, &satrec.mo, &satrec.no_kozai,
+                &satrec.revnum);
         }
 
         // ---- find no, ndot, nddot ----
@@ -2333,102 +2264,6 @@ namespace SGP4Funcs
 
         days2mdhms_SGP4(year, satrec.epochdays, mon, day, hr, minute, sec);
         jday_SGP4(year, mon, day, hr, minute, sec, satrec.jdsatepoch, satrec.jdsatepochF);
-
-        // ---- input start stop times manually
-        if ((typerun != 'v') && (typerun != 'c'))
-        {
-            // ------------- enter start/stop ymd hms values --------------------
-            if (typeinput == 'e')
-            {
-                printf("input start prop year mon day hr min sec \n");
-                // make sure there is no space at the end of the format specifiers in scanf!
-#ifdef _MSC_VER
-                scanf_s("%i %i %i %i %i %lf", &startyear, &startmon, &startday, &starthr, &startmin, &startsec);
-#else
-                scanf("%i %i %i %i %i %lf", &startyear, &startmon, &startday, &starthr, &startmin, &startsec);
-#endif
-                fflush(stdin);
-                jday_SGP4(startyear, startmon, startday, starthr, startmin, startsec, jdstart, jdstartF);
-
-                printf("input stop prop year mon day hr min sec \n");
-#ifdef _MSC_VER
-                scanf_s("%i %i %i %i %i %lf", &stopyear, &stopmon, &stopday, &stophr, &stopmin, &stopsec);
-#else
-                scanf("%i %i %i %i %i %lf", &stopyear, &stopmon, &stopday, &stophr, &stopmin, &stopsec);
-#endif
-                fflush(stdin);
-                jday_SGP4(stopyear, stopmon, stopday, stophr, stopmin, stopsec, jdstop, jdstopF);
-
-                startmfe = (jdstart - satrec.jdsatepoch) * 1440.0 + (jdstartF - satrec.jdsatepochF) * 1440.0;
-                stopmfe = (jdstop - satrec.jdsatepoch) * 1440.0 + (jdstopF - satrec.jdsatepochF) * 1440.0;
-
-                printf("input time step in minutes \n");
-#ifdef _MSC_VER
-                scanf_s("%lf", &deltamin);
-#else
-                scanf("%lf", &deltamin);
-#endif
-            }
-            // -------- enter start/stop year and days of year values -----------
-            if (typeinput == 'd')
-            {
-                printf("input start year dayofyr \n");
-#ifdef _MSC_VER
-                scanf_s("%i %lf", &startyear, &startdayofyr);
-#else
-                scanf("%i %lf", &startyear, &startdayofyr);
-#endif
-                printf("input stop year dayofyr \n");
-#ifdef _MSC_VER
-                scanf_s("%i %lf", &stopyear, &stopdayofyr);
-#else
-                scanf("%i %lf", &stopyear, &stopdayofyr);
-#endif
-
-                days2mdhms_SGP4(startyear, startdayofyr, mon, day, hr, minute, sec);
-                jday_SGP4(startyear, mon, day, hr, minute, sec, jdstart, jdstartF);
-                days2mdhms_SGP4(stopyear, stopdayofyr, mon, day, hr, minute, sec);
-                jday_SGP4(stopyear, mon, day, hr, minute, sec, jdstop, jdstopF);
-
-                startmfe = (jdstart - satrec.jdsatepoch) * 1440.0 + (jdstartF - satrec.jdsatepochF) * 1440.0;
-                stopmfe = (jdstop - satrec.jdsatepoch) * 1440.0 + (jdstopF - satrec.jdsatepochF) * 1440.0;
-
-                printf("input time step in minutes \n");
-#ifdef _MSC_VER
-                scanf_s("%lf", &deltamin);
-#else
-
-                scanf("%lf", &deltamin);
-#endif
-            }
-            // ------------------ enter start/stop mfe values -------------------
-            if (typeinput == 'm')
-            {
-#ifdef _MSC_VER
-                printf("input start min from epoch \n");
-                scanf_s("%lf", &startmfe);
-                printf("input stop min from epoch \n");
-                scanf_s("%lf", &stopmfe);
-                printf("input time step in minutes \n");
-                scanf_s("%lf", &deltamin);
-#else
-                printf("input start min from epoch \n");
-                scanf("%lf", &startmfe);
-                printf("input stop min from epoch \n");
-                scanf("%lf", &stopmfe);
-                printf("input time step in minutes \n");
-                scanf("%lf", &deltamin);
-#endif
-            }
-        }
-
-        // ------------ perform complete catalog evaluation, -+ 1 day -----------
-        if (typerun == 'c')
-        {
-            startmfe = -1440.0;
-            stopmfe = 1440.0;
-            deltamin = 10.0;
-        }
 
         // ---------------- initialize the orbit at sgp4epoch -------------------
         sgp4init(whichconst, opsmode, satrec.satnum, (satrec.jdsatepoch + satrec.jdsatepochF) - 2433281.5, satrec.bstar,
@@ -2730,28 +2565,28 @@ namespace SGP4Funcs
             // ---------------------- elliptical -----------------------
             if (ecc < 1.0 - small)
             {
-            sine = (sqrt(1.0 - ecc*ecc) * sin(nu)) / (1.0 + ecc*cos(nu));
-            cose = (ecc + cos(nu)) / (1.0 + ecc*cos(nu));
-            e0 = atan2(sine, cose);
-            m = e0 - ecc*sin(e0);
+                sine = (sqrt(1.0 - ecc*ecc) * sin(nu)) / (1.0 + ecc*cos(nu));
+                cose = (ecc + cos(nu)) / (1.0 + ecc*cos(nu));
+                e0 = atan2(sine, cose);
+                m = e0 - ecc*sin(e0);
             }
             else
                 // -------------------- hyperbolic  --------------------
                 if (ecc > 1.0 + small)
                 {
-            if ((ecc > 1.0) && (fabs(nu) + 0.00001 < pi - acos(1.0 / ecc)))
-            {
-                sine = (sqrt(ecc*ecc - 1.0) * sin(nu)) / (1.0 + ecc*cos(nu));
-                e0 = asinh_SGP4(sine);
-                m = ecc*sinh(e0) - e0;
-            }
+                    if ((ecc > 1.0) && (fabs(nu) + 0.00001 < pi - acos(1.0 / ecc)))
+                    {
+                        sine = (sqrt(ecc*ecc - 1.0) * sin(nu)) / (1.0 + ecc*cos(nu));
+                        e0 = asinh_SGP4(sine);
+                        m = ecc*sinh(e0) - e0;
+                    }
                 }
                 else
                     // ----------------- parabolic ---------------------
                     if (fabs(nu) < 168.0*pi / 180.0)
                     {
-            e0 = tan(nu*0.5);
-            m = e0 + (e0*e0*e0) / 3.0;
+                        e0 = tan(nu*0.5);
+                        m = e0 + (e0*e0*e0) / 3.0;
                     }
 
         if (ecc < 1.0)
@@ -2832,10 +2667,7 @@ namespace SGP4Funcs
             rdotv, infinite, temp, c1, hk, twopi, magh, halfpi, e;
 
         int i;
-        // switch this to an integer msvs seems to have probelms with this and strncpy_s
-        //char typeorbit[2];
         int typeorbit;
-        // here
         // typeorbit = 1 = 'ei'
         // typeorbit = 2 = 'ce'
         // typeorbit = 3 = 'ci'
@@ -2880,11 +2712,6 @@ namespace SGP4Funcs
 
             // --------  determine type of orbit for later use  --------
             // ------ elliptical, parabolic, hyperbolic inclined -------
-            //#ifdef _MSC_VER  // chk if compiling under MSVS
-            //         strcpy_s(typeorbit, 2 * sizeof(char), "ei");
-            //#else
-            //         strcpy(typeorbit, "ei");
-            //#endif
             typeorbit = 1;
 
             if (ecc < small)
@@ -2892,21 +2719,10 @@ namespace SGP4Funcs
                 // ----------------  circular equatorial ---------------
                 if ((incl < small) | (fabs(incl - pi) < small))
                 {
-                    //#ifdef _MSC_VER
-                    //                 strcpy_s(typeorbit, sizeof(typeorbit), "ce");
-                    //#else
-                    //                 strcpy(typeorbit, "ce");
-                    //#endif
                     typeorbit = 2;
                 }
                 else
                 {
-                    // --------------  circular inclined ---------------
-                    //#ifdef _MSC_VER
-                    //                 strcpy_s(typeorbit, sizeof(typeorbit), "ci");
-                    //#else
-                    //                 strcpy(typeorbit, "ci");
-                    //#endif
                     typeorbit = 3;
                 }
             }
@@ -2914,11 +2730,6 @@ namespace SGP4Funcs
             {
                 // - elliptical, parabolic, hyperbolic equatorial --
                 if ((incl < small) | (fabs(incl - pi) < small)){
-                    //#ifdef _MSC_VER
-                    //                 strcpy_s(typeorbit, sizeof(typeorbit), "ee");
-                    //#else
-                    //                 strcpy(typeorbit, "ee");
-                    //#endif
                     typeorbit = 4;
                 }
             }
@@ -2937,7 +2748,6 @@ namespace SGP4Funcs
                 omega = undefined;
 
             // ---------------- find argument of perigee ---------------
-            //if (strcmp(typeorbit, "ei") == 0)
             if (typeorbit == 1)
             {
                 argp = angle_SGP4(nbar, ebar);
@@ -2948,7 +2758,6 @@ namespace SGP4Funcs
                 argp = undefined;
 
             // ------------  find true anomaly at epoch    -------------
-            //if (typeorbit[0] == 'e')
             if ((typeorbit == 1) || (typeorbit == 4))
             {
                 nu = angle_SGP4(ebar, r);
@@ -2959,7 +2768,6 @@ namespace SGP4Funcs
                 nu = undefined;
 
             // ----  find argument of latitude - circular inclined -----
-            //if (strcmp(typeorbit, "ci") == 0)
             if (typeorbit == 3)
             {
                 arglat = angle_SGP4(nbar, r);
@@ -2971,7 +2779,6 @@ namespace SGP4Funcs
                 arglat = undefined;
 
             // -- find longitude of perigee - elliptical equatorial ----
-            //if ((ecc>small) && (strcmp(typeorbit, "ee") == 0))
             if ((ecc>small) && (typeorbit == 4))
             {
                 temp = ebar[0] / ecc;
@@ -2987,7 +2794,6 @@ namespace SGP4Funcs
                 lonper = undefined;
 
             // -------- find true longitude - circular equatorial ------
-            //if ((magr>small) && (strcmp(typeorbit, "ce") == 0))
             if ((magr > small) && (typeorbit == 2))
             {
                 temp = r[0] / magr;
@@ -3004,7 +2810,6 @@ namespace SGP4Funcs
                 truelon = undefined;
 
             // ------------ find mean anomaly for all orbits -----------
-            //if (typeorbit[0] == 'e')
             if ((typeorbit == 1) || (typeorbit == 4))
                 newtonnu_SGP4(ecc, nu, e, m);
         }
@@ -3240,5 +3045,3 @@ namespace SGP4Funcs
 
 
 } // namespace SGP4Funcs
-
-

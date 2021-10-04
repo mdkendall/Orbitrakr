@@ -4,11 +4,11 @@
 *
 *                                 SGP4.h
 *
-*    this file contains the sgp4 procedures for analytical propagation
-*    of a satellite. the code was originally released in the 1980 and 1986
-*    spacetrack papers. a detailed discussion of the theory and history
-*    may be found in the 2006 aiaa paper by vallado, crawford, hujsak,
-*    and kelso.
+*    This file contains the sgp4 procedures for analytical propagation
+*    of a satellite. The code was originally released in the 1980 and 1986
+*    spacetrack papers. A detailed discussion of the theory and history
+*    may be found in the 2006 aiaa paper by Vallado, Crawford, Hujsak,
+*    and Kelso.
 *
 *    current :
 *              12 mar 20  david vallado
@@ -103,17 +103,17 @@ typedef struct elsetrec
   // sgp4fix add constant parameters to eliminate mutliple calls during execution
   double tumin, mus, radiusearthkm, xke, j2, j3, j4, j3oj2;
 
-  //       Additional elements to capture relevant TLE and object information:       
+  //       Additional elements to capture relevant TLE and object information:
   long dia_mm; // RSO dia in mm
   double period_sec; // Period in seconds
-  unsigned char active; // "Active S/C" flag (0=n, 1=y) 
-  unsigned char not_orbital; // "Orbiting S/C" flag (0=n, 1=y)  
-  double rcs_m2; // "RCS (m^2)" storage  
+  unsigned char active; // "Active S/C" flag (0=n, 1=y)
+  unsigned char not_orbital; // "Orbiting S/C" flag (0=n, 1=y)
+  double rcs_m2; // "RCS (m^2)" storage
 
 } elsetrec;
 
 
-namespace SGP4Funcs 
+namespace SGP4Funcs
 {
 
     //  public class SGP4Class
@@ -151,9 +151,8 @@ namespace SGP4Funcs
     void twoline2rv
         (
         char      longstr1[130], char longstr2[130],
-        char      typerun, char typeinput, char opsmode,
+        char opsmode,
         gravconsttype       whichconst,
-        double& startmfe, double& stopmfe, double& deltamin,
         elsetrec& satrec
         );
 
