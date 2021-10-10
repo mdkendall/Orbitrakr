@@ -38,6 +38,7 @@ void onWifiConnected(void) {
 
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
+    predictor->init();
 }
 
 void setup(void) {

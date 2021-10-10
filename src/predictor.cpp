@@ -18,16 +18,42 @@
   ***********************************************************************/
 
 #include "predictor.h"
+#include <HTTPClient.h>
 #include <string.h>
 
-#include <Arduino.h>
+Predictor::Predictor(uint32_t catalogNumber) :
+    catalogNumber(catalogNumber) {
+}
 
-Predictor::Predictor(uint32_t catalogNumber) {
+void Predictor::init(void) {
 
-    // Initial testing FIXME
-    strncpy(tle[0], "1 46494U 20068J   21264.59740918 -.00000154  00000-0 -66228-5 0  9992", 70);
-    strncpy(tle[1], "2 46494  97.6971 201.6260 0019667 111.1537 249.1792 15.03720340 53785", 70);
+    HTTPClient http;
+    String url;
+    char tleTemp[2][82];
 
-    // convert the string format TLE to SGP4 elements and initialise satellite record
-    SGP4Funcs::twoline2rv(tle[0], tle[1], 'a', wgs72, satrec);
+    // fetch the latest TLE from Celestrak
+    url = String("http://celestrak.com/satcat/tle.php?CATNR=") + String(catalogNumber);
+    http.begin(url);
+    if (http.GET() == HTTP_CODE_OK) {
+        WiFiClient response = http.getStream();
+        satName = response.readStringUntil('\n');
+        tle[0] = response.readStringUntil('\n');
+        tle[1] = response.readStringUntil('\n');
+
+        // Convert the string format TLE to SGP4 elements and initialise the satellite record.
+        // twoline2rv needs non-const char arrays (it may modify them), so we make temporary copies.
+        strncpy(tleTemp[0], tle[0].c_str(), 80);
+        strncpy(tleTemp[1], tle[1].c_str(), 80);
+        SGP4Funcs::twoline2rv(tleTemp[0], tleTemp[1], 'a', wgs72, satrec);
+
+        // Debug
+        Serial.println(String("Predictor init complete:"));
+        Serial.println(String("  Sat Name: ") + satName);
+        Serial.println(String("  TLE[0]: ") + tle[0]);
+        Serial.println(String("  TLE[1]: ") + tle[1]);
+
+    } else {
+        Serial.println("Predictor init failed");
+    }
+    http.end();
 }

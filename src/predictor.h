@@ -21,15 +21,19 @@
 #define PREDICTOR_H
 
 #include <stdint.h>
+#include <Arduino.h>
 
 #include "SGP4.h"
 
 class Predictor {
   public:
     Predictor(uint32_t catalogNumber);
+    void init(void);
 
   private:
-    char tle[2][130];   // NORAD two-line element set
+    uint32_t catalogNumber;
+    String satName;
+    String tle[2];      // NORAD two-line element set
     elsetrec satrec;    // SGP4 satellite record
 };
 
