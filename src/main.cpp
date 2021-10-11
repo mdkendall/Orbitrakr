@@ -20,6 +20,7 @@
 #include <Arduino.h>
 #include <DNSServer.h>
 #include <Webserver.h>
+#include <time.h>
 
 #include "webui.h"
 #include "rotator.h"
@@ -36,6 +37,7 @@ Predictor *predictor;   // satellite predictor
 
 void onWifiConnected(void) {
 
+    configTime(0, 0, "0.pool.ntp.org", "1.pool.ntp.org", "2.pool.ntp.org");
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
     predictor->init();
@@ -59,6 +61,13 @@ void setup(void) {
 }
 
 void loop(void) {
+    static unsigned long t, next = 0;
     webUI->doLoop();
     rotctld->doLoop();
+
+    // FIXME testing
+    if ((t = millis()) > next) {
+        next = t + 1000;
+        predictor->posn(time(nullptr));
+    }
 }
