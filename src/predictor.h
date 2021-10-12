@@ -29,7 +29,7 @@ class Predictor {
   public:
     Predictor(uint32_t catalogNumber);
     void init(void);
-    void posn(time_t t);
+    void posn(time_t t, double *pos);
 
   private:
     uint32_t catalogNumber;

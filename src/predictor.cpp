@@ -70,7 +70,7 @@ void Predictor::init(void) {
     http.end();
 }
 
-void Predictor::posn(time_t t) {
+void Predictor::posn(time_t t, double *pos) {
 
     double rteme[3], vteme[3], ateme[3] = {0.};
     double recef[3], vecef[3], aecef[3];
@@ -90,7 +90,14 @@ void Predictor::posn(time_t t) {
     double jdut1 = satrec.jdsatepoch + satrec.jdsatepochF + tsince/1440.0;
     AstroLib::teme_ecef(rteme, vteme, ateme, MathTimeLib::eTo, recef, vecef, aecef,
         0.0 /* unused when eqeterms is 0 */, jdut1, 0.0, 0.0, 0.0 /* ignore polar motion */, 0);
+    pos[0] = recef[0]; pos[1] = recef[1]; pos[2] = recef[2];
     Serial.println(String("ECEF ") +
         String(" R: ") + String(recef[0]) + String(" ") + String(recef[1]) + String(" ") + String(recef[2]) +
         String(" V: ") + String(vecef[0]) + String(" ") + String(vecef[1]) + String(" ") + String(vecef[2]));
+
+    // Convert to latitude, longitude and height
+    double latgc, latgd, lon, hellp;
+    AstroLib::ecef2ll(recef, latgc, latgd, lon, hellp);
+    Serial.println(String("Latgc: ") + String(latgc * RAD_TO_DEG) + String(" Latgd: ") + String(latgd * RAD_TO_DEG) +
+        String(" Lon: ") + String(lon * RAD_TO_DEG) + String(" Hellp: ") + String(hellp));
 }

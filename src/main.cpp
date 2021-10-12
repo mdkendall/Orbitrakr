@@ -67,7 +67,8 @@ void loop(void) {
 
     // FIXME testing
     if ((t = millis()) > next) {
+        double pos[3];
         next = t + 1000;
-        predictor->posn(time(nullptr));
+        predictor->posn(time(nullptr), pos);
     }
 }

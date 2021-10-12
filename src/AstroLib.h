@@ -64,6 +64,16 @@ namespace AstroLib
 		double recef[3], double vecef[3], double aecef[3],
 		double ttt, double jdut1, double lod, double xp, double yp, int eqeterms
 	);
+
+	// -----------------------------------------------------------------------------------------
+	//                                       2-body functions
+	// -----------------------------------------------------------------------------------------
+
+	void ecef2ll
+	(
+		double recef[3],
+		double& latgc, double& latgd, double& lon, double& hellp
+	);
 }
 
 #endif
