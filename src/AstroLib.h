@@ -74,6 +74,28 @@ namespace AstroLib
 		double recef[3],
 		double& latgc, double& latgd, double& lon, double& hellp
 	);
+
+	void site
+	(
+		double latgd, double lon, double alt,
+		double rsecef[3], double vsecef[3]
+	);
+
+	/* ------------------------- conversion techniques -------------------------- */
+
+	void rv_razel
+	(
+		double recef[3], double vecef[3], double rsecef[3], double latgd, double lon,
+		MathTimeLib::edirection direct,
+		double& rho, double& az, double& el, double& drho, double& daz, double& del
+	);
+
+	void rvsez_razel
+	(
+		double rhosez[3], double drhosez[3],
+		MathTimeLib::edirection direct,
+		double& rho, double& az, double& el, double& drho, double& daz, double& del
+	);
 }
 
 #endif

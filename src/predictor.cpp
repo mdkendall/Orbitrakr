@@ -100,4 +100,13 @@ void Predictor::posn(time_t t, double *pos) {
     AstroLib::ecef2ll(recef, latgc, latgd, lon, hellp);
     Serial.println(String("Latgc: ") + String(latgc * RAD_TO_DEG) + String(" Latgd: ") + String(latgd * RAD_TO_DEG) +
         String(" Lon: ") + String(lon * RAD_TO_DEG) + String(" Hellp: ") + String(hellp));
+
+    // FIXME testing - calculate look angles from site
+    double rsecef[3], vsecef[3];
+    double rho, az, el, drho, daz, del;
+    double slatgd = 49.312 * DEG_TO_RAD, slon = -123.073 * DEG_TO_RAD;
+    AstroLib::site(slatgd, slon, 0.0, rsecef, vsecef);
+    AstroLib::rv_razel(recef, vecef, rsecef, slatgd, slon, MathTimeLib::eTo, rho, az, el, drho, daz, del);
+    Serial.println(String("Site: Az: ") +
+        String(az * RAD_TO_DEG) + String(" El: ") + String(el * RAD_TO_DEG) + String(" rho: ") + String(rho));
 }

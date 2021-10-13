@@ -440,4 +440,312 @@ namespace AstroLib
 
 		latgc = asin(recef[2] / magr);  // any location
 	}   // ecef2ll
+
+	/*---------------------------------------------------------------------------
+	*
+	*                           procedure site
+	*
+	*  this function finds the position and velocity vectors for a site.  the
+	*    answer is returned in the geocentric equatorial (ecef) coordinate system.
+	*    note that the velocity is zero because the coordinate system is fixed to
+	*    the earth.
+	*
+	*  author        : david vallado                  719-573-2600   25 jun 2002
+	*
+	*  inputs          description                               range / units
+	*    latgd       - geodetic latitude                        -pi/2 to pi/2 rad
+	*    lon         - longitude of site                        -2pi to 2pi rad
+	*    alt         - altitude                                     km
+	*
+	*  outputs       :
+	*    rsecef      - ecef site position vector                     km
+	*    vsecef      - ecef site velocity vector                     km/s
+	*
+	*  locals        :
+	*    sinlat      - variable containing  sin(lat)                 rad
+	*    temp        - temporary real value
+	*    rdel        - rdel component of site vector                 km
+	*    rk          - rk component of site vector                   km
+	*    cearth      -
+	*
+	*  coupling      :
+	*    none
+	*
+	*  references    :
+	*    vallado       2013, 430, alg 51, ex 7-1
+	----------------------------------------------------------------------------*/
+
+	void site
+	(
+		double latgd, double lon, double alt,
+		double rsecef[3], double vsecef[3]
+	)
+	{
+		const double rearth = 6378.137;  // km
+		const double eesqrd = 0.00669437999013;
+		double   sinlat, cearth, rdel, rk;
+
+		// ---------------------  initialize values   -------------------
+		sinlat = sin(latgd);
+
+		// -------  find rdel and rk components of site vector  ---------
+		cearth = rearth / sqrt(1.0 - (eesqrd * sinlat * sinlat));
+		rdel = (cearth + alt) * cos(latgd);
+		rk = ((1.0 - eesqrd) * cearth + alt) * sinlat;
+
+		// ----------------  find site position vector  -----------------
+		rsecef[0] = rdel * cos(lon);
+		rsecef[1] = rdel * sin(lon);
+		rsecef[2] = rk;
+
+		// ----------------  find site velocity vector  -----------------
+		vsecef[0] = 0.0;
+		vsecef[1] = 0.0;
+		vsecef[2] = 0.0;
+	}  // site
+
+	/* ------------------------- conversion techniques -------------------------- */
+
+	/*------------------------------------------------------------------------------
+	*
+	*                           procedure rv_razel
+	*
+	*  this procedure converts range, azimuth, and elevation and their rates with
+	*    the geocentric equatorial (ecef) position and velocity vectors.  notice the
+	*    value of small as it can affect rate term calculations. uses velocity
+	*    vector to find the solution of singular cases.
+	*
+	*  author        : david vallado                  719-573-2600   22 jun 2002
+	*
+	*  inputs          description                              range / units
+	*    recef       - ecef position vector                          km
+	*    vecef       - ecef velocity vector                          km/s
+	*    rsecef      - ecef site position vector                     km
+	*    latgd       - geodetic latitude                             -pi/2 to pi/2 rad
+	*    lon         - geodetic longitude                            -2pi to pi rad
+	*    direct      -  direction to convert                         eFrom  eTo
+	*
+	*  outputs       :
+	*    rho         - satellite range from site                     km
+	*    az          - azimuth                                       0.0 to 2pi rad
+	*    el          - elevation                                     -pi/2 to pi/2 rad
+	*    drho        - range rate                                    km/s
+	*    daz         - azimuth rate                                  rad/s
+	*    del         - elevation rate                                rad/s
+	*
+	*  locals        :
+	*    rhovecef    - ecef range vector from site                   km
+	*    drhovecef   - ecef velocity vector from site                km/s
+	*    rhosez      - sez range vector from site                    km
+	*    drhosez     - sez velocity vector from site                 km
+	*    tempvec     - temporary vector
+	*    temp        - temporary extended value
+	*    temp1       - temporary extended value
+	*    i           - index
+	*
+	*  coupling      :
+	*    mag         - MathTimeLib::magnitude of a vector
+	*    addvec      - add two vectors
+	*    rot3        - rotation about the 3rd axis
+	*    rot2        - rotation about the 2nd axis
+	*    atan2       - arc tangent function which also resloves quadrants
+	*    dot         - dot product of two vectors
+	*    rvsez_razel - find r2 and v2 from site in topocentric horizon (sez) system
+	*    lncom2      - combine two vectors and constants
+	*    arcsin      - arc sine function
+	*    sgn         - returns the MathTimeLib::sgn of a variable
+	*
+	*  references    :
+	*    vallado       2013, 265, alg 27
+	-----------------------------------------------------------------------------*/
+
+	void rv_razel
+	(
+		double recef[3], double vecef[3], double rsecef[3], double latgd, double lon,
+		MathTimeLib::edirection direct,
+		double& rho, double& az, double& el, double& drho, double& daz, double& del
+	)
+	{
+		const double halfpi = pi / 2.0;
+		const double small = 0.0000001;
+
+		double temp, temp1;
+		double rhoecef[3], drhoecef[3], rhosez[3], drhosez[3], tempvec[3];
+
+		if (direct == MathTimeLib::eFrom)
+		{
+			/* ---------  find sez range and velocity vectors ----------- */
+			rvsez_razel(rhosez, drhosez, direct, rho, az, el, drho, daz, del);
+
+			/* ----------  perform sez to ecef transformation ------------ */
+			MathTimeLib::rot2(rhosez, latgd - halfpi, tempvec);
+			MathTimeLib::rot3(tempvec, -lon, rhoecef);
+			MathTimeLib::rot2(drhosez, latgd - halfpi, tempvec);
+			MathTimeLib::rot3(tempvec, -lon, drhoecef);
+
+			/* ---------  find ecef range and velocity vectors -----------*/
+			MathTimeLib::addvec(1.0, rhoecef, 1.0, rsecef, recef);
+			vecef[0] = drhoecef[0];
+			vecef[1] = drhoecef[1];
+			vecef[2] = drhoecef[2];
+		}
+		else
+		{
+			/* ------- find ecef range vector from site to satellite ----- */
+			MathTimeLib::addvec(1.0, recef, -1.0, rsecef, rhoecef);
+			drhoecef[0] = vecef[0];
+			drhoecef[1] = vecef[1];
+			drhoecef[2] = vecef[2];
+			rho = MathTimeLib::mag(rhoecef);
+
+			/* ------------ convert to sez for calculations ------------- */
+			MathTimeLib::rot3(rhoecef, lon, tempvec);
+			MathTimeLib::rot2(tempvec, halfpi - latgd, rhosez);
+			MathTimeLib::rot3(drhoecef, lon, tempvec);
+			MathTimeLib::rot2(tempvec, halfpi - latgd, drhosez);
+
+			/* ------------ calculate azimuth and elevation ------------- */
+			temp = sqrt(rhosez[0] * rhosez[0] + rhosez[1] * rhosez[1]);
+			if (fabs(rhosez[1]) < small)
+				if (temp < small)
+				{
+					temp1 = sqrt(drhosez[0] * drhosez[0] + drhosez[1] * drhosez[1]);
+					az = atan2(drhosez[1] / temp1, -drhosez[0] / temp1);
+				}
+				else
+					if (rhosez[0] > 0.0)
+						az = pi;
+					else
+						az = 0.0;
+			else
+				az = atan2(rhosez[1] / temp, -rhosez[0] / temp);
+
+			if (temp < small)  // directly over the north pole
+				el = MathTimeLib::sgn(rhosez[2]) * halfpi; // +- 90
+			else
+				el = asin(rhosez[2] / MathTimeLib::mag(rhosez));
+
+			/* ----- calculate range, azimuth and elevation rates ------- */
+			drho = MathTimeLib::dot(rhosez, drhosez) / rho;
+			if (fabs(temp * temp) > small)
+				daz = (drhosez[0] * rhosez[1] - drhosez[1] * rhosez[0]) / (temp * temp);
+			else
+				daz = 0.0;
+
+			if (fabs(temp) > 0.00000001)
+				del = (drhosez[2] - drho * sin(el)) / temp;
+			else
+				del = 0.0;
+		}
+	}  // rv_razel
+
+	/*------------------------------------------------------------------------------
+	*
+	*                           procedure rvsez_razel
+	*
+	*  this procedure converts range, azimuth, and elevation values with slant
+	*    range and velocity vectors for a satellite from a radar site in the
+	*    topocentric horizon (sez) system.
+	*
+	*  author        : david vallado                  719-573-2600   22 jun 2002
+	*
+	*  inputs          description                               range / units
+	*    rhovec      - sez satellite range vector                    km
+	*    drhovec     - sez satellite velocity vector                 km/s
+	*    direct      -  direction to convert                         eFrom  eTo
+	*
+	*  outputs       :
+	*    rho         - satellite range from site                     km
+	*    az          - azimuth                                       0.0 to 2pi rad
+	*    el          - elevation                                     -pi/2 to pi/2 rad
+	*    drho        - range rate                                    km/s
+	*    daz         - azimuth rate                                  rad/s
+	*    del         - elevation rate                                rad/s
+	*
+	*  locals        :
+	*    sinel       - variable for sin( el )
+	*    cosel       - variable for cos( el )
+	*    sinaz       - variable for sin( az )
+	*    cosaz       - variable for cos( az )
+	*    temp        -
+	*    temp1       -
+	*
+	*  coupling      :
+	*    mag         - magnitude of a vector
+	*    sgn         - returns the MathTimeLib::sgn of a variable
+	*    dot         - dot product
+	*    arcsin      - arc sine function
+	*    atan2       - arc tangent function that resolves quadrant ambiguites
+	*
+	*  references    :
+	*    vallado       2013, 261, eq 4-4, eq 4-5
+	-----------------------------------------------------------------------------*/
+
+	void rvsez_razel
+	(
+		double rhosez[3], double drhosez[3],
+		MathTimeLib::edirection direct,
+		double& rho, double& az, double& el, double& drho, double& daz, double& del
+	)
+	{
+		const double small = 0.00000001;
+		const double halfpi = pi / 2.0;
+
+		double temp1, temp, sinel, cosel, sinaz, cosaz;
+
+		if (direct == MathTimeLib::eFrom)
+		{
+			sinel = sin(el);
+			cosel = cos(el);
+			sinaz = sin(az);
+			cosaz = cos(az);
+
+			/* ----------------- form sez range vector ------------------ */
+			rhosez[0] = (-rho * cosel * cosaz);
+			rhosez[1] = (rho * cosel * sinaz);
+			rhosez[2] = (rho * sinel);
+
+			/* --------------- form sez velocity vector ----------------- */
+			drhosez[0] = (-drho * cosel * cosaz +
+				rhosez[2] * del * cosaz + rhosez[1] * daz);
+			drhosez[1] = (drho * cosel * sinaz -
+				rhosez[2] * del * sinaz - rhosez[0] * daz);
+			drhosez[2] = (drho * sinel + rho * del * cosel);
+		}
+		else
+		{
+			/* ------------ calculate azimuth and elevation ------------- */
+			temp = sqrt(rhosez[0] * rhosez[0] + rhosez[1] * rhosez[1]);
+			if (fabs(rhosez[1]) < small)
+				if (temp < small)
+				{
+					temp1 = sqrt(drhosez[0] * drhosez[0] + drhosez[1] * drhosez[1]);
+					az = atan2(drhosez[1] / temp1, drhosez[0] / temp1);
+				}
+				else
+					if (drhosez[0] > 0.0)
+						az = pi;
+					else
+						az = 0.0;
+			else
+				az = atan2(rhosez[1] / temp, rhosez[0] / temp);
+
+			if (temp < small)   // directly over the north pole
+				el = MathTimeLib::sgn(rhosez[2]) * halfpi;  // +- 90
+			else
+				el = asin(rhosez[2] / MathTimeLib::mag(rhosez));
+
+			/* ------  calculate range, azimuth and elevation rates ----- */
+			drho = MathTimeLib::dot(rhosez, drhosez) / rho;
+			if (fabs(temp * temp) > small)
+				daz = (drhosez[0] * rhosez[1] - drhosez[1] * rhosez[0]) / (temp * temp);
+			else
+				daz = 0.0;
+
+			if (fabs(temp) > small)
+				del = (drhosez[2] - drho * sin(el)) / temp;
+			else
+				del = 0.0;
+		}
+	}   // rvsez_razel
 }
