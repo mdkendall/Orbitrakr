@@ -24,11 +24,10 @@
 #include <string.h>
 #include <time.h>
 
-Predictor::Predictor(uint32_t catalogNumber) :
-    catalogNumber(catalogNumber) {
+Predictor::Predictor(void) {
 }
 
-void Predictor::init(void) {
+bool Predictor::init(uint32_t catNum) {
 
     HTTPClient http;
     String url;
@@ -36,6 +35,9 @@ void Predictor::init(void) {
     int year, mon, day, hr, minute;
     double sec;
     struct tm t = {0};
+    bool done = false;
+
+    catalogNumber = catNum;
 
     // Fetch the latest TLE from Celestrak
     url = String("http://celestrak.com/satcat/tle.php?CATNR=") + String(catalogNumber);
@@ -56,6 +58,7 @@ void Predictor::init(void) {
         SGP4Funcs::invjday_SGP4(satrec.jdsatepoch, satrec.jdsatepochF, year, mon, day, hr, minute, sec);
         t.tm_year = year - 1900; t.tm_mon = mon - 1; t.tm_mday = day; t.tm_hour = hr; t.tm_min = minute; t.tm_sec = sec;
         epoch = mktime(&t);
+        done = true;
 
         // Debug
         Serial.println(String("Predictor init complete:"));
@@ -63,11 +66,11 @@ void Predictor::init(void) {
         Serial.println(String("  TLE[0]: ") + tle[0]);
         Serial.println(String("  TLE[1]: ") + tle[1]);
         Serial.println(String("  Epoch: ") + String(epoch));
-
     } else {
         Serial.println("Predictor init failed");
     }
     http.end();
+    return done;
 }
 
 /** @brief  Propagate the satelite position from the epoch to the given time

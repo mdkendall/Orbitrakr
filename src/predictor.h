@@ -27,8 +27,8 @@
 
 class Predictor {
   public:
-    Predictor(uint32_t catalogNumber);
-    void init(void);
+    Predictor(void);
+    bool init(uint32_t catNum);
     void propagate(time_t t);
     void position(double& latgc, double& latgd, double& lon, double& hellp);
     void look(double slatgd, double slon, double& rho, double& az, double& el);

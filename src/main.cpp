@@ -40,7 +40,7 @@ void onWifiConnected(void) {
     configTime(0, 0, "0.pool.ntp.org", "1.pool.ntp.org", "2.pool.ntp.org");
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
-    predictor->init();
+    predictor->init(46494);
 }
 
 void setup(void) {
@@ -53,7 +53,7 @@ void setup(void) {
     dnsServer = new DNSServer;
     webServer = new WebServer(80);
     webUI = new WebUI(*dnsServer, *webServer, *rotator, onWifiConnected);
-    predictor = new Predictor(46494);
+    predictor = new Predictor();
 
     // FIXME
     rotator->azAxis.home();
