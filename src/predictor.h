@@ -29,9 +29,10 @@ class Predictor {
   public:
     Predictor(void);
     bool init(uint32_t catNum);
+    void site(double slatgd, double slon);
     void propagate(time_t t);
     void position(double& latgc, double& latgd, double& lon, double& hellp);
-    void look(double slatgd, double slon, double& rho, double& az, double& el);
+    void look(double& rho, double& az, double& el);
 
   private:
     // Satelite
@@ -45,6 +46,11 @@ class Predictor {
     double recef[3];    // satelite position in ECEF reference frame
     double vecef[3];    // satelite velocity in ECEF reference frame
     double aecef[3];    // satelite acceleration in ECEF reference frame
+    // Site
+    double slatgd;      // site geodetic latitude in radians
+    double slon;        // site longitude in radians
+    double rsecef[3];   // site position in ECEF reference frame
+    double vsecef[3];   // site velocity in ECEF reference frame
 };
 
 #endif

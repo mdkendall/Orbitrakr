@@ -41,6 +41,7 @@ void onWifiConnected(void) {
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
     predictor->init(46494);
+    predictor->site(49.315 * DEG_TO_RAD, -123.075 * DEG_TO_RAD);
 }
 
 void setup(void) {
@@ -72,6 +73,6 @@ void loop(void) {
         double rho, az, el;
         predictor->propagate(time(nullptr));
         predictor->position(latgc, latgd, lon, hellp);
-        predictor->look(49.315 * DEG_TO_RAD, -123.075 * DEG_TO_RAD, rho, az, el);
+        predictor->look(rho, az, el);
     }
 }

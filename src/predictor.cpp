@@ -114,19 +114,25 @@ void Predictor::position(double& latgc, double& latgd, double& lon, double& hell
         String(" Lon: ") + String(lon * RAD_TO_DEG) + String(" Hellp: ") + String(hellp));
 }
 
-/** @brief  Calculate look angles from a given site
+/** @brief  Specify a site location
  *  @param  slatgd  site geodetic latitude in radians
  *  @param  slon    site longitude in radians
+ */
+void Predictor::site(double slatgd, double slon) {
+
+    this->slatgd = slatgd; this->slon = slon;
+    AstroLib::site(slatgd, slon, 0.0, rsecef, vsecef);
+}
+
+/** @brief  Calculate look angles from the specified site
  *  @param  rho     [returned] range in km
  *  @param  az      [returned] azimuth in radians
  *  @param  el      [returned] elevation in radians
  */
-void Predictor::look(double slatgd, double slon, double& rho, double& az, double& el) {
+void Predictor::look(double& rho, double& az, double& el) {
 
     // Calculate look angles from a given site
-    double rsecef[3], vsecef[3];
     double drho, daz, del;
-    AstroLib::site(slatgd, slon, 0.0, rsecef, vsecef);
     AstroLib::rv_razel(recef, vecef, rsecef, slatgd, slon, MathTimeLib::eTo, rho, az, el, drho, daz, del);
     Serial.println(String("Site: Az: ") +
         String(az * RAD_TO_DEG) + String(" El: ") + String(el * RAD_TO_DEG) + String(" rho: ") + String(rho));
