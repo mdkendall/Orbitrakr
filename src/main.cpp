@@ -35,13 +35,16 @@ Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
 Predictor *predictor;   // satellite predictor
 
+bool run = false;       // FIXME
+
 void onWifiConnected(void) {
 
     configTime(0, 0, "0.pool.ntp.org", "1.pool.ntp.org", "2.pool.ntp.org");
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
     predictor->init(46494);
-    predictor->site(49.315 * DEG_TO_RAD, -123.075 * DEG_TO_RAD);
+    predictor->site(webUI->getSiteLat() * DEG_TO_RAD, webUI->getSiteLon() * DEG_TO_RAD);
+    run = true;
 }
 
 void setup(void) {
@@ -67,7 +70,7 @@ void loop(void) {
     rotctld->doLoop();
 
     // FIXME testing
-    if ((t = millis()) > next) {
+    if (run && (t = millis()) > next) {
         next = t + 1000;
         double latgc, latgd, lon, hellp;
         double rho, az, el;

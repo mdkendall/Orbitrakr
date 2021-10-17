@@ -58,6 +58,9 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::
     groupRotator.addItem(&paramElSpeedMax);
     groupRotator.addItem(&paramElAccelMax);
     m_iotWebConf.addParameterGroup(&groupRotator);
+    groupSite.addItem(&paramSiteLat);
+    groupSite.addItem(&paramSiteLon);
+    m_iotWebConf.addParameterGroup(&groupSite);
     m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
     m_iotWebConf.setWifiConnectionCallback(wifiConnectionCb);
     m_iotWebConf.init();

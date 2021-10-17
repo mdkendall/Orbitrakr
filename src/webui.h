@@ -39,6 +39,8 @@ class WebUI {
     float getElSpeedMax() { return atof(elSpeedMax); }
     float getAzAccelMax() { return atof(azAccelMax); }
     float getElAccelMax() { return atof(elAccelMax); }
+    float getSiteLat() { return atof(siteLat); }
+    float getSiteLon() { return atof(siteLon); };
     char *getThingName() { return m_iotWebConf.getThingName(); }
 
    private:
@@ -52,6 +54,8 @@ class WebUI {
     char elSpeedMax[NUMBER_LEN] = "";
     char azAccelMax[NUMBER_LEN] = "";
     char elAccelMax[NUMBER_LEN] = "";
+    char siteLat[NUMBER_LEN] = "";
+    char siteLon[NUMBER_LEN] = "";
 
     iotwebconf::ParameterGroup groupRotator = iotwebconf::ParameterGroup("Rotator", "Rotator");
     iotwebconf::NumberParameter paramAzStepsPerRev = iotwebconf::NumberParameter("Azimuth motor resolution in steps per revolution", "azStepsPerRev", azStepsPerRev, NUMBER_LEN, "64");
@@ -60,6 +64,9 @@ class WebUI {
     iotwebconf::NumberParameter paramElSpeedMax = iotwebconf::NumberParameter("Elevation motor max speed in steps per second", "elSpeedMax", elSpeedMax, NUMBER_LEN, "200");
     iotwebconf::NumberParameter paramAzAccelMax = iotwebconf::NumberParameter("Azimuth motor acceleration in steps per second per second", "azAccelMax", azAccelMax, NUMBER_LEN, "400");
     iotwebconf::NumberParameter paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", elAccelMax, NUMBER_LEN, "400");
+    iotwebconf::ParameterGroup groupSite = iotwebconf::ParameterGroup("Site", "Site");
+    iotwebconf::NumberParameter paramSiteLat = iotwebconf::NumberParameter("Site latitude in degrees", "siteLat", siteLat, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
+    iotwebconf::NumberParameter paramSiteLon = iotwebconf::NumberParameter("Site longitude in degrees", "siteLon", siteLon, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     void handleRoot(void);
     void handleDashboard(void);
     void handleApi(void);
