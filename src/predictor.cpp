@@ -73,7 +73,7 @@ bool Predictor::init(uint32_t catNum) {
     return done;
 }
 
-/** @brief  Propagate the satelite position from the epoch to the given time
+/** @brief  Propagate the satellite position from the epoch to the given time
  *  @param  t   time as UNIX timestamp
  */
 void Predictor::propagate(time_t t) {
@@ -84,7 +84,7 @@ void Predictor::propagate(time_t t) {
     tsince = ((double)t - (double)epoch) / 60.0;
     Serial.println(String("t: ") + String(t) + String(" tsince: ") + String(tsince));
 
-    // Calculate the satelite position and velocity vectors in the True Equator,
+    // Calculate the satellite position and velocity vectors in the True Equator,
     // Mean Equinox (TEME) earth-centered inertial (non-rotating) reference frame.
     SGP4Funcs::sgp4(satrec, tsince, rteme, vteme);
     Serial.println(String("TEME ") +
@@ -100,11 +100,11 @@ void Predictor::propagate(time_t t) {
         String(" V: ") + String(vecef[0]) + String(" ") + String(vecef[1]) + String(" ") + String(vecef[2]));
 }
 
-/** @brief  Get the calculated satelite position
- *  @param  latgc   [returned] satelite geocentric latitude in radians
- *  @param  latgd   [returned] satelite geodetic latitude in radians
- *  @param  lon     [returned] satelite longitude in radians
- *  @param  hellp   [returned] satelite height above ellipsoid in km
+/** @brief  Get the calculated satellite position
+ *  @param  latgc   [returned] satellite geocentric latitude in radians
+ *  @param  latgd   [returned] satellite geodetic latitude in radians
+ *  @param  lon     [returned] satellite longitude in radians
+ *  @param  hellp   [returned] satellite height above ellipsoid in km
  */
 void Predictor::position(double& latgc, double& latgd, double& lon, double& hellp) {
 

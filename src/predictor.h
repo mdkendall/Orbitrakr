@@ -35,7 +35,7 @@ class Predictor {
     void look(double& rho, double& az, double& el);
 
   private:
-    // Satelite
+    // Satellite
     uint32_t catalogNumber;
     String satName;
     String tle[2];      // NORAD two-line element set
@@ -43,9 +43,9 @@ class Predictor {
     time_t epoch;       // TLE epoch as UNIX timestamp
     // Prediction
     double tsince;      // time since epoch in minutes
-    double recef[3];    // satelite position in ECEF reference frame
-    double vecef[3];    // satelite velocity in ECEF reference frame
-    double aecef[3];    // satelite acceleration in ECEF reference frame
+    double recef[3];    // satellite position in ECEF reference frame
+    double vecef[3];    // satellite velocity in ECEF reference frame
+    double aecef[3];    // satellite acceleration in ECEF reference frame
     // Site
     double slatgd;      // site geodetic latitude in radians
     double slon;        // site longitude in radians
