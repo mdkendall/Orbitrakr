@@ -67,8 +67,11 @@ void loop(void) {
 
     // FIXME testing
     if ((t = millis()) > next) {
-        double pos[3];
         next = t + 1000;
-        predictor->posn(time(nullptr), pos);
+        double latgc, latgd, lon, hellp;
+        double rho, az, el;
+        predictor->propagate(time(nullptr));
+        predictor->position(latgc, latgd, lon, hellp);
+        predictor->look(49.315 * DEG_TO_RAD, -123.075 * DEG_TO_RAD, rho, az, el);
     }
 }

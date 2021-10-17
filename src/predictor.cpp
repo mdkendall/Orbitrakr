@@ -70,13 +70,15 @@ void Predictor::init(void) {
     http.end();
 }
 
-void Predictor::posn(time_t t, double *pos) {
+/** @brief  Propagate the satelite position from the epoch to the given time
+ *  @param  t   time as UNIX timestamp
+ */
+void Predictor::propagate(time_t t) {
 
     double rteme[3], vteme[3], ateme[3] = {0.};
-    double recef[3], vecef[3], aecef[3];
 
     // Calculate the time offset from the TLE epoch
-    double tsince = ((double)t - (double)epoch) / 60.0;
+    tsince = ((double)t - (double)epoch) / 60.0;
     Serial.println(String("t: ") + String(t) + String(" tsince: ") + String(tsince));
 
     // Calculate the satelite position and velocity vectors in the True Equator,
@@ -90,21 +92,37 @@ void Predictor::posn(time_t t, double *pos) {
     double jdut1 = satrec.jdsatepoch + satrec.jdsatepochF + tsince/1440.0;
     AstroLib::teme_ecef(rteme, vteme, ateme, MathTimeLib::eTo, recef, vecef, aecef,
         0.0 /* unused when eqeterms is 0 */, jdut1, 0.0, 0.0, 0.0 /* ignore polar motion */, 0);
-    pos[0] = recef[0]; pos[1] = recef[1]; pos[2] = recef[2];
     Serial.println(String("ECEF ") +
         String(" R: ") + String(recef[0]) + String(" ") + String(recef[1]) + String(" ") + String(recef[2]) +
         String(" V: ") + String(vecef[0]) + String(" ") + String(vecef[1]) + String(" ") + String(vecef[2]));
+}
 
-    // Convert to latitude, longitude and height
-    double latgc, latgd, lon, hellp;
+/** @brief  Get the calculated satelite position
+ *  @param  latgc   [returned] satelite geocentric latitude in radians
+ *  @param  latgd   [returned] satelite geodetic latitude in radians
+ *  @param  lon     [returned] satelite longitude in radians
+ *  @param  hellp   [returned] satelite height above ellipsoid in km
+ */
+void Predictor::position(double& latgc, double& latgd, double& lon, double& hellp) {
+
+    // Convert ECEF coordinates to latitude, longitude and height
     AstroLib::ecef2ll(recef, latgc, latgd, lon, hellp);
     Serial.println(String("Latgc: ") + String(latgc * RAD_TO_DEG) + String(" Latgd: ") + String(latgd * RAD_TO_DEG) +
         String(" Lon: ") + String(lon * RAD_TO_DEG) + String(" Hellp: ") + String(hellp));
+}
 
-    // FIXME testing - calculate look angles from site
+/** @brief  Calculate look angles from a given site
+ *  @param  slatgd  site geodetic latitude in radians
+ *  @param  slon    site longitude in radians
+ *  @param  rho     [returned] range in km
+ *  @param  az      [returned] azimuth in radians
+ *  @param  el      [returned] elevation in radians
+ */
+void Predictor::look(double slatgd, double slon, double& rho, double& az, double& el) {
+
+    // Calculate look angles from a given site
     double rsecef[3], vsecef[3];
-    double rho, az, el, drho, daz, del;
-    double slatgd = 49.312 * DEG_TO_RAD, slon = -123.073 * DEG_TO_RAD;
+    double drho, daz, del;
     AstroLib::site(slatgd, slon, 0.0, rsecef, vsecef);
     AstroLib::rv_razel(recef, vecef, rsecef, slatgd, slon, MathTimeLib::eTo, rho, az, el, drho, daz, del);
     Serial.println(String("Site: Az: ") +
