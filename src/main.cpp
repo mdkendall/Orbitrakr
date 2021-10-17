@@ -25,7 +25,7 @@
 #include "webui.h"
 #include "rotator.h"
 #include "rotctld.h"
-#include "predictor.h"
+#include "tracker.h"
 #include "thingpings.h"
 
 DNSServer *dnsServer;   // DNS server for the config WiFi access point
@@ -33,18 +33,14 @@ WebServer *webServer;   // webserver for the config web interface
 WebUI *webUI;           // config web interface
 Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
-Predictor *predictor;   // satellite predictor
-
-bool run = false;       // FIXME
+Tracker *tracker;       // satellite tracker
 
 void onWifiConnected(void) {
 
     configTime(0, 0, "0.pool.ntp.org", "1.pool.ntp.org", "2.pool.ntp.org");
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
-    predictor->init(46494);
-    predictor->site(webUI->getSiteLat() * DEG_TO_RAD, webUI->getSiteLon() * DEG_TO_RAD);
-    run = true;
+    tracker->restart();
 }
 
 void setup(void) {
@@ -57,7 +53,7 @@ void setup(void) {
     dnsServer = new DNSServer;
     webServer = new WebServer(80);
     webUI = new WebUI(*dnsServer, *webServer, *rotator, onWifiConnected);
-    predictor = new Predictor();
+    tracker = new Tracker(*webUI, *rotator);
 
     // FIXME
     rotator->azAxis.home();
@@ -65,17 +61,6 @@ void setup(void) {
 }
 
 void loop(void) {
-    static unsigned long t, next = 0;
     webUI->doLoop();
     rotctld->doLoop();
-
-    // FIXME testing
-    if (run && (t = millis()) > next) {
-        next = t + 1000;
-        double latgc, latgd, lon, hellp;
-        double rho, az, el;
-        predictor->propagate(time(nullptr));
-        predictor->position(latgc, latgd, lon, hellp);
-        predictor->look(rho, az, el);
-    }
 }
