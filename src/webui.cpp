@@ -117,7 +117,7 @@ void WebUI::handleDashboard(void) {
 void WebUI::handleApi(void) {
 
     String s;
-    DynamicJsonDocument doc(256);
+    DynamicJsonDocument doc(512);
     for (auto &itemGroup : itemGroups) {
         doc[itemGroup.id]["label"] = itemGroup.label;
         for (auto &item : itemGroup.items) {

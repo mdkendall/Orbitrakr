@@ -28,11 +28,19 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     state(TRACKER_STATE_STOPPED),
     predictor() {
 
-    xTaskCreatePinnedToCore(task, "Tracker", 2048, this, 2, &taskHandle, 1);
+    WebUIItemGroup &itemGroup = webUI.addItemGroup("tracker", "Tracker");
+    itemLatgd = &itemGroup.addItem("latgd", "Latitude");
+    itemLon = &itemGroup.addItem("lon", "Longitude");
+    itemHellp = &itemGroup.addItem("hellp", "Altitude");
+    itemAz = &itemGroup.addItem("az", "Azimuth");
+    itemEl = &itemGroup.addItem("el", "Elevation");
+    itemRho = &itemGroup.addItem("rho", "Range");
+
+    xTaskCreatePinnedToCore(task, "Tracker", 4096, this, 2, &taskHandle, 1);
 }
 
 void Tracker::restart(void) {
-    predictor.init(24278);
+    predictor.init(46494);
     predictor.site(webUI.getSiteLat() * DEG_TO_RAD, webUI.getSiteLon() * DEG_TO_RAD);
     state = TRACKER_STATE_STARTED;
 }
@@ -55,6 +63,12 @@ void Tracker::task(void *param) {
                     tracker->rotator.azAxis.setTarget(az*RAD_TO_DEG);
                     tracker->rotator.elAxis.setTarget(el*RAD_TO_DEG);
                 }
+                tracker->itemLatgd->setValue(latgd*RAD_TO_DEG);
+                tracker->itemLon->setValue(lon*RAD_TO_DEG);
+                tracker->itemHellp->setValue(hellp);
+                tracker->itemAz->setValue(az*RAD_TO_DEG);
+                tracker->itemEl->setValue(el*RAD_TO_DEG);
+                tracker->itemRho->setValue(rho);
                 break;
         }
         vTaskDelay(1000);

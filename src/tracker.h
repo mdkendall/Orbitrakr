@@ -40,6 +40,12 @@ class Tracker {
     static void task(void *param);
 
     WebUI& webUI;
+    WebUIItem *itemLatgd;
+    WebUIItem *itemLon;
+    WebUIItem *itemHellp;
+    WebUIItem *itemAz;
+    WebUIItem *itemEl;
+    WebUIItem *itemRho;
     Rotator& rotator;
     TrackerState_t state;
     Predictor predictor;
