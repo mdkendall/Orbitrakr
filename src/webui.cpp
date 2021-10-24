@@ -117,12 +117,13 @@ void WebUI::handleDashboard(void) {
 void WebUI::handleApi(void) {
 
     String s;
-    DynamicJsonDocument doc(512);
+    DynamicJsonDocument doc(1024);
     for (auto &itemGroup : itemGroups) {
         doc[itemGroup.id]["label"] = itemGroup.label;
         for (auto &item : itemGroup.items) {
             doc[itemGroup.id]["items"][item.id]["label"] = item.label;
             doc[itemGroup.id]["items"][item.id]["value"] = item.getValue();
+            doc[itemGroup.id]["items"][item.id]["units"] = item.units;
         }
     }
     serializeJson(doc, s);
@@ -142,15 +143,15 @@ WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
     id(id), label(label) {
 };
 
-WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label) {
+WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units) {
 
-    WebUIItem item(id, label);
+    WebUIItem item(id, label, units);
     this->items.push_back(item);
     return this->items.back();
 }
 
-WebUIItem::WebUIItem(const char *id, const char *label) :
-    id(id), label(label) {
+WebUIItem::WebUIItem(const char *id, const char *label, const char *units) :
+    id(id), label(label), units(units) {
 }
 
 void WebUIItem::setValue(float value) {

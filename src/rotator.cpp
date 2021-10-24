@@ -69,8 +69,8 @@ Rotator::Rotator(WebUI &webUI) :
     elAxis.posMin = 0.0; elAxis.posMax = 90.0;
 
     WebUIItemGroup &itemGroup = webUI.addItemGroup("rotator", "Rotator");
-    itemAz = &itemGroup.addItem("az", "Azimuth");
-    itemEl = &itemGroup.addItem("el", "Elevation");
+    itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;");
+    itemEl = &itemGroup.addItem("el", "Elevation", "&deg;");
 
     xTaskCreatePinnedToCore(task, "Rotator", 2048, this, 3, &taskHandle, 1);
 }

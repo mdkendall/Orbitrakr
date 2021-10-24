@@ -29,12 +29,12 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     predictor() {
 
     WebUIItemGroup &itemGroup = webUI.addItemGroup("tracker", "Tracker");
-    itemLatgd = &itemGroup.addItem("latgd", "Latitude");
-    itemLon = &itemGroup.addItem("lon", "Longitude");
-    itemHellp = &itemGroup.addItem("hellp", "Altitude");
-    itemAz = &itemGroup.addItem("az", "Azimuth");
-    itemEl = &itemGroup.addItem("el", "Elevation");
-    itemRho = &itemGroup.addItem("rho", "Range");
+    itemLatgd = &itemGroup.addItem("latgd", "Latitude", "&deg;");
+    itemLon = &itemGroup.addItem("lon", "Longitude", "&deg;");
+    itemHellp = &itemGroup.addItem("hellp", "Altitude", "km");
+    itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;");
+    itemEl = &itemGroup.addItem("el", "Elevation", "&deg;");
+    itemRho = &itemGroup.addItem("rho", "Range", "km");
 
     xTaskCreatePinnedToCore(task, "Tracker", 4096, this, 2, &taskHandle, 1);
 }
