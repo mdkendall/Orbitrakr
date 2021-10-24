@@ -1,8 +1,12 @@
 
 static const char dashboardHtml[] = R"EOF(
 <div id='app'>
-    <h2>Rotator</h2>
-    <div>Azimuth: {{info.rotator.az}}<br/>Elevation: {{info.rotator.el}}</div>
+    <div v-for="itemGroup in info">
+        <h3>{{itemGroup.label}}</h3>
+        <div v-for="item in itemGroup.items">
+            {{item.label}} : {{item.value}}
+        </div>
+    </div>
 </div>
 )EOF";
 

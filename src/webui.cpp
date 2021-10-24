@@ -45,10 +45,9 @@ class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
 
 CustomHtmlFormatProvider customHtmlFormatProvider;
 
-WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::function<void()> wifiConnectionCb) :
+WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb) :
     m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
-    m_webServer(&webServer),
-    m_rotator(&rotator) {
+    m_webServer(&webServer) {
 
     Serial.println("Web UI initialising.");
     groupRotator.addItem(&paramAzStepsPerRev);
@@ -119,10 +118,45 @@ void WebUI::handleApi(void) {
 
     String s;
     DynamicJsonDocument doc(256);
-    doc["rotator"]["az"] = m_rotator->azAxis.getPosition();
-    doc["rotator"]["el"] = m_rotator->elAxis.getPosition();
+    for (auto &itemGroup : itemGroups) {
+        doc[itemGroup.id]["label"] = itemGroup.label;
+        for (auto &item : itemGroup.items) {
+            doc[itemGroup.id]["items"][item.id]["label"] = item.label;
+            doc[itemGroup.id]["items"][item.id]["value"] = item.getValue();
+        }
+    }
     serializeJson(doc, s);
 
     m_webServer->sendHeader("Access-Control-Allow-Origin", "*");
     m_webServer->send(200, "application/json; charset=UTF-8", s);
+}
+
+WebUIItemGroup& WebUI::addItemGroup(const char *id, const char *label) {
+
+    WebUIItemGroup itemGroup(id, label);
+    this->itemGroups.push_back(itemGroup);
+    return this->itemGroups.back();
+}
+
+WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
+    id(id), label(label) {
+};
+
+WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label) {
+
+    WebUIItem item(id, label);
+    this->items.push_back(item);
+    return this->items.back();
+}
+
+WebUIItem::WebUIItem(const char *id, const char *label) :
+    id(id), label(label) {
+}
+
+void WebUIItem::setValue(float value) {
+    this->value = value;
+}
+
+float WebUIItem::getValue(void) {
+    return this->value;
 }

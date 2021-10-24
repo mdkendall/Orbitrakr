@@ -48,11 +48,11 @@ void setup(void) {
     Serial.println();
     Serial.println("Starting up...");
 
-    rotator = new Rotator;
-    rotctld = new Rotctld(4533, *rotator);
     dnsServer = new DNSServer;
     webServer = new WebServer(80);
-    webUI = new WebUI(*dnsServer, *webServer, *rotator, onWifiConnected);
+    webUI = new WebUI(*dnsServer, *webServer, onWifiConnected);
+    rotator = new Rotator(*webUI);
+    rotctld = new Rotctld(4533, *rotator);
     tracker = new Tracker(*webUI, *rotator);
 
     // FIXME

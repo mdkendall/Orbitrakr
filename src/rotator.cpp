@@ -57,7 +57,8 @@ void RotatorAxis::stop(void) {
 
 /* --- Rotator --- */
 
-Rotator::Rotator(void) :
+Rotator::Rotator(WebUI &webUI) :
+    webUI(webUI),
     azAxis(AccelStepper::HALF4WIRE, 13, 14, 12, 27),
     elAxis(AccelStepper::HALF4WIRE, 32, 25, 33, 26) {
 
@@ -67,18 +68,20 @@ Rotator::Rotator(void) :
     azAxis.posMin = -180.0; azAxis.posMax = 180.0;
     elAxis.posMin = 0.0; elAxis.posMax = 90.0;
 
+    WebUIItemGroup &itemGroup = webUI.addItemGroup("rotator", "Rotator");
+    itemAz = &itemGroup.addItem("az", "Azimuth");
+    itemEl = &itemGroup.addItem("el", "Elevation");
+
     xTaskCreatePinnedToCore(task, "Rotator", 2048, this, 3, &taskHandle, 1);
 }
 
 void Rotator::task(void *param) {
     Rotator *rotator = (Rotator*)param;
     while (true) {
-        rotator->doLoop();
+        rotator->azAxis.doLoop();
+        rotator->elAxis.doLoop();
+        rotator->itemAz->setValue(rotator->azAxis.getPosition());
+        rotator->itemEl->setValue(rotator->elAxis.getPosition());
         vTaskDelay(1);
     }
-}
-
-void Rotator::doLoop(void) {
-    azAxis.doLoop();
-    elAxis.doLoop();
 }

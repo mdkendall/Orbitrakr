@@ -22,6 +22,8 @@
 
 #include <AccelStepper.h>
 
+#include "webui.h"
+
 class RotatorAxis {
    public:
     RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
@@ -47,16 +49,18 @@ class RotatorAxis {
 
 class Rotator {
    public:
-    Rotator();
+    Rotator(WebUI &webUI);
 
+    WebUI &webUI;
     RotatorAxis azAxis;     // azimuth axis
     RotatorAxis elAxis;     // elevation axis
 
    private:
     static void task(void *param);
-    void doLoop(void);
 
     TaskHandle_t taskHandle;
+    WebUIItem *itemAz;
+    WebUIItem *itemEl;
 };
 
 #endif

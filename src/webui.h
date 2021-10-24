@@ -20,18 +20,42 @@
 #ifndef WEBUI_H
 #define WEBUI_H
 
+#include <list>
 #include <IotWebConf.h>
 #include <IotWebConfUsing.h>
-
-#include "rotator.h"
 
 #define STRING_LEN 128
 #define NUMBER_LEN 32
 
+struct WebUIItem {
+  public:
+    WebUIItem(const char *id, const char *label);
+    void setValue(float value);
+    float getValue(void);
+
+    const char *id;
+    const char *label;
+
+  private:
+    float value;
+};
+
+class WebUIItemGroup {
+  public:
+    WebUIItemGroup(const char *id, const char *label);
+    WebUIItem &addItem(const char *id, const char *label);
+
+    const char *id;
+    const char *label;
+    std::list<WebUIItem> items;
+};
+
 class WebUI {
-   public:
-    WebUI(DNSServer &dnsServer, WebServer &webServer, Rotator &rotator, std::function<void()> wifiConnectionCb);
+  public:
+    WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb);
     void doLoop(void);
+
+    WebUIItemGroup &addItemGroup(const char *id, const char *label);
 
     float getAzStepsPerRev() { return atof(azStepsPerRev); }
     float getElStepsPerRev() { return atof(elStepsPerRev); }
@@ -43,10 +67,11 @@ class WebUI {
     float getSiteLon() { return atof(siteLon); };
     char *getThingName() { return m_iotWebConf.getThingName(); }
 
-   private:
+  private:
     IotWebConf m_iotWebConf;
     WebServer *m_webServer;
-    Rotator *m_rotator;
+
+    std::list<WebUIItemGroup> itemGroups;
 
     char azStepsPerRev[NUMBER_LEN] = "";
     char elStepsPerRev[NUMBER_LEN] = "";
