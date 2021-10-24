@@ -111,7 +111,7 @@ namespace MathTimeLib
 		if (xval*xval - 1.0 < 0.0)
 		{
 			temp = undefined;
-			printf("error in arccosh function \n");
+			// printf("error in arccosh function \n");
 		}
 		else
 			temp = log(xval + sqrt(xval*xval - 1.0));
@@ -635,7 +635,7 @@ namespace MathTimeLib
 		}
 	}  // addvec3
 
-
+#if 0
     // this writes a vector out to the screen
 	void    writevec
 	(
@@ -647,6 +647,7 @@ namespace MathTimeLib
 		printf(" v %15.9f%15.9f%15.9f", v[0], v[1], v[2]);
 		printf(" a %14.9f%14.9f%14.9f\n", a[0], a[1], a[2]);
 	}  //  writevec
+#endif
 
     /* -----------------------------------------------------------------------------
     *
@@ -909,7 +910,7 @@ namespace MathTimeLib
 					amax = fabs(lu[i][j]);
 			if (fabs(amax) < small)
 			{
-				printf(" singular matrix amax ");
+				// printf(" singular matrix amax ");
 			}
 			scale[i] = 1.0 / amax;
 		}
@@ -949,7 +950,7 @@ namespace MathTimeLib
 			indexx[j] = imax;
 			if (fabs(lu[j][j]) < small)
 			{
-				printf(" matrix is singular lu ");
+				// printf(" matrix is singular lu ");
 			}
 			if (j != order - 1)
 			{
@@ -1240,6 +1241,7 @@ namespace MathTimeLib
 
 	}   // cholesky
 
+#if 0
 	void writemat
 	(
 		char matname[30],
@@ -1277,6 +1279,7 @@ namespace MathTimeLib
 			printf(" \n");
 		}
 	}  // writeexpmat
+#endif
 
     /* -----------------------------------------------------------------------------
     *
@@ -1616,17 +1619,17 @@ namespace MathTimeLib
 				else
 				{
 					value = 0.0;
-					printf("\nerror in cubicinterp root %17.14f %11.7f %11.7f %11.7f \n",
-						valuein, r1r, r2r, r3r);
-					printf("valuein %lf value(pos root) %lf \n", valuein, value);
+					// printf("\nerror in cubicinterp root %17.14f %11.7f %11.7f %11.7f \n",
+					//	valuein, r1r, r2r, r3r);
+					// printf("valuein %lf value(pos root) %lf \n", valuein, value);
 				}
 			}
 		}
 
-		//printf("valuein %lf value(pos root) %lf %lf\n", valuein, value, ac3 * pow(value, 3) + ac2 * value * value + ac1 * value + ac0);
-		//printf("in p1a %lf  %lf  %lf  %lf cubspl  %lf %lf  %lf  %lf  %lf \n", p1a, p1b, p1c, p1d, ac0, ac1, ac2, ac3);
-		//printf("in p2a %lf  %lf  %lf  %lf cubspl  %lf %lf  %lf  %lf  %lf \n", p2a, p2b, p2c, p2d, kc0, kc1, kc2, kc3);
-		//printf("cubic %lf  %lf  %lf  %lf cubspl  %lf %lf r2 %lf  %lf r3 %lf  %lf \n", kc3, kc2, kc1, kc0 - valuein, r1r, r1i, r2r, r2i, r3r, r3i);
+		// printf("valuein %lf value(pos root) %lf %lf\n", valuein, value, ac3 * pow(value, 3) + ac2 * value * value + ac1 * value + ac0);
+		// printf("in p1a %lf  %lf  %lf  %lf cubspl  %lf %lf  %lf  %lf  %lf \n", p1a, p1b, p1c, p1d, ac0, ac1, ac2, ac3);
+		// printf("in p2a %lf  %lf  %lf  %lf cubspl  %lf %lf  %lf  %lf  %lf \n", p2a, p2b, p2c, p2d, kc0, kc1, kc2, kc3);
+		// printf("cubic %lf  %lf  %lf  %lf cubspl  %lf %lf r2 %lf  %lf r3 %lf  %lf \n", kc3, kc2, kc1, kc0 - valuein, r1r, r1i, r2r, r2i, r3r, r3i);
 		return (ac3 * pow(value, 3) + ac2 * value * value + ac1 * value + ac0);
 	} // cubicinterp
 
