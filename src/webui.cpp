@@ -104,7 +104,6 @@ void WebUI::handleDashboard(void) {
     String s = m_iotWebConf.getHtmlFormatProvider()->getHead();
     s += m_iotWebConf.getHtmlFormatProvider()->getStyle();
     s += "<script src=\"https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js\"></script>";
-    s += "<script src=\"https://cdn.jsdelivr.net/npm/axios@0.21.4\"></script>";
     s += m_iotWebConf.getHtmlFormatProvider()->getHeadEnd();
     s += dashboardHtml;
     s += dashboardScript;

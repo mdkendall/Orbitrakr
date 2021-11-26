@@ -20,7 +20,7 @@ static const char dashboardScript[] = R"EOF(
         },
         mounted () {
             this.timer = setInterval(function() {
-                axios.get('/api').then(response => (this.info = response.data))
+                fetch('/api').then(response => response.json()).then(data => (this.info = data));
             }.bind(this), 1000);
         }
     });
