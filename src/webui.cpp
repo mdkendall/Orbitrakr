@@ -62,6 +62,9 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
     m_iotWebConf.addParameterGroup(&groupSite);
     m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
     m_iotWebConf.setWifiConnectionCallback(wifiConnectionCb);
+    m_iotWebConf.setupUpdateServer(
+        [this](const char* updatePath) { m_httpUpdater.setup(m_webServer, updatePath); },
+        [this](const char* userName, char* password) { m_httpUpdater.updateCredentials(userName, password); });
     m_iotWebConf.init();
 
     // -- Set up required URL handlers on the web server.

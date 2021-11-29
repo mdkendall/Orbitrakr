@@ -23,6 +23,7 @@
 #include <list>
 #include <IotWebConf.h>
 #include <IotWebConfUsing.h>
+#include <IotWebConfESP32HTTPUpdateServer.h>
 
 #define STRING_LEN 128
 #define NUMBER_LEN 32
@@ -71,6 +72,7 @@ class WebUI {
   private:
     IotWebConf m_iotWebConf;
     WebServer *m_webServer;
+    HTTPUpdateServer m_httpUpdater;
 
     std::list<WebUIItemGroup> itemGroups;
 
