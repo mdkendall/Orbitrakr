@@ -62,9 +62,9 @@ Rotator::Rotator(WebUI &webUI) :
     azAxis(AccelStepper::HALF4WIRE, 13, 14, 12, 27),
     elAxis(AccelStepper::HALF4WIRE, 32, 25, 33, 26) {
 
-    azAxis.stepsPerRev = 4075.7728; elAxis.stepsPerRev = 4075.7728;
-    azAxis.speedMax = 200; elAxis.speedMax = 200;
-    azAxis.accelMax = 50; elAxis.accelMax = 50;
+    azAxis.stepsPerRev = webUI.getAzStepsPerRev(); elAxis.stepsPerRev = webUI.getElStepsPerRev();
+    azAxis.speedMax = webUI.getAzSpeedMax(); elAxis.speedMax = webUI.getElSpeedMax();
+    azAxis.accelMax = webUI.getAzAccelMax(); elAxis.accelMax = webUI.getElAccelMax();
     azAxis.posMin = -180.0; azAxis.posMax = 180.0;
     elAxis.posMin = 0.0; elAxis.posMax = 90.0;
 
