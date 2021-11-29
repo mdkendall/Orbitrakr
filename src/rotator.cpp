@@ -28,9 +28,6 @@ RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
 
 void RotatorAxis::doLoop(void) {
     stepper.run();
-    //if (stepper.distanceToGo() == 0) {
-    //    stepper.disableOutputs();
-    //}
 }
 
 void RotatorAxis::setTarget(float pos) {
