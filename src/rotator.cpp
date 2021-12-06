@@ -57,7 +57,7 @@ void RotatorAxis::stop(void) {
 Rotator::Rotator(WebUI &webUI) :
     webUI(webUI),
     azAxis(AccelStepper::HALF4WIRE, 13, 14, 12, 27),
-    elAxis(AccelStepper::HALF4WIRE, 32, 25, 33, 26) {
+    elAxis(AccelStepper::HALF4WIRE, 32, 25, 26, 33) {
 
     azAxis.stepsPerRev = webUI.getAzStepsPerRev(); elAxis.stepsPerRev = webUI.getElStepsPerRev();
     azAxis.speedMax = webUI.getAzSpeedMax(); elAxis.speedMax = webUI.getElSpeedMax();
