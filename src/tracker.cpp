@@ -39,10 +39,19 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     xTaskCreatePinnedToCore(task, "Tracker", 4096, this, 2, &taskHandle, 1);
 }
 
+/** Restart operation.
+ *  Intended to be called after a change in configuration or network connectivity.
+ */
 void Tracker::restart(void) {
     predictor.init(webUI.getCatalogNumber());
     predictor.site(webUI.getSiteLat() * DEG_TO_RAD, webUI.getSiteLon() * DEG_TO_RAD);
     state = TRACKER_STATE_STARTED;
+}
+
+/** Set the tracked satellite by NORAD catalog number.
+ */
+void Tracker::setSat(uint32_t catalogNumber) {
+    predictor.init(catalogNumber);
 }
 
 void Tracker::task(void *param) {

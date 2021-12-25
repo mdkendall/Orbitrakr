@@ -34,6 +34,7 @@ typedef enum TrackerState_e {
 class Tracker {
    public:
     Tracker(WebUI &webUI, Rotator &rotator);
+    void setSat(uint32_t catalogNumber);
     void restart(void);
 
    private:

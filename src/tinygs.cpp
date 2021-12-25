@@ -95,6 +95,7 @@ void Tinygs::handleMessage(char* topic, uint8_t* payload, unsigned int len) {
     if (error.code() == DeserializationError::Ok) {
         uint32_t catNum = doc["NORAD"];
         Serial.println(String("TinyGS tracking NORAD ") + String(catNum));
+        tracker.setSat(catNum);
         itemCatalogNumber->setValue(catNum);
     }
 }
