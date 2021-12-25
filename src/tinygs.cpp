@@ -42,10 +42,17 @@ Tinygs::Tinygs(WebUI &webUI, Tracker &tracker) :
     xTaskCreatePinnedToCore(task, "Tinygs", 8192, this, 2, &taskHandle, 1);
 }
 
+/** @brief  Restart operation.
+ *  Intended to be called after a change in configuration or network connectivity.
+ */
 void Tinygs::restart(void) {
     state = TINYGS_STATE_STARTED;
 }
 
+/** @brief  Main task of the TinyGS follower.
+ *  Connects to the TinyGS MQTT broker as the configured user and subscribes
+ *  to updates for the congigured station.
+ */
 void Tinygs::task(void *param) {
 
     Tinygs *tinygs = (Tinygs*)param;
@@ -87,6 +94,11 @@ void Tinygs::task(void *param) {
     }
 }
 
+/** @brief  Handle receipt of a message from the TinyGS MQTT broker.
+ *  @param  topic   message topic (expected to be tinygs/USERNAME/STATION/cmnd/begine)
+ *  @param  payload message body (expected to be JSON)
+ *  @param  len     message body length
+ */
 void Tinygs::handleMessage(char* topic, uint8_t* payload, unsigned int len) {
 
     size_t size = JSON_ARRAY_SIZE(10) + 10 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(16) + JSON_ARRAY_SIZE(8) + JSON_ARRAY_SIZE(8) + 64;

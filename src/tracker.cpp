@@ -39,7 +39,7 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     xTaskCreatePinnedToCore(task, "Tracker", 4096, this, 2, &taskHandle, 1);
 }
 
-/** Restart operation.
+/** @brief  Restart operation.
  *  Intended to be called after a change in configuration or network connectivity.
  */
 void Tracker::restart(void) {
@@ -48,12 +48,16 @@ void Tracker::restart(void) {
     state = TRACKER_STATE_STARTED;
 }
 
-/** Set the tracked satellite by NORAD catalog number.
+/** @brief  Set the tracked satellite by NORAD catalog number.
  */
 void Tracker::setSat(uint32_t catalogNumber) {
     predictor.init(catalogNumber);
 }
 
+/** @brief  Main task of the Tracker.
+ *  Propagates the tracked satellite and calculates the look angle from the
+ *  site. Commands the rotator if the satellite is above the horizon.
+ */
 void Tracker::task(void *param) {
     Tracker *tracker = (Tracker*)param;
 
