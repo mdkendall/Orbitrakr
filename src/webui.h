@@ -59,17 +59,25 @@ class WebUI {
 
     WebUIItemGroup &addItemGroup(const char *id, const char *label);
 
+    /* rotator */
     float getAzStepsPerRev() { return atof(azStepsPerRev); }
     float getElStepsPerRev() { return atof(elStepsPerRev); }
     float getAzSpeedMax() { return atof(azSpeedMax); }
     float getElSpeedMax() { return atof(elSpeedMax); }
     float getAzAccelMax() { return atof(azAccelMax); }
     float getElAccelMax() { return atof(elAccelMax); }
+
+    /* tracker */
+    int getCatalogNumber() { return atoi(catalogNumber); };
     float getSiteLat() { return atof(siteLat); }
     float getSiteLon() { return atof(siteLon); };
+
+    /* tinygs */
     char *getTinygsUsername() { return tinygsUsername; };
     char *getTinygsPassword() { return tinygsPassword; };
     char *getTinygsStation() { return tinygsStation; };
+
+    /* general */
     char *getThingName() { return m_iotWebConf.getThingName(); }
 
   private:
@@ -85,6 +93,7 @@ class WebUI {
     char elSpeedMax[NUMBER_LEN] = "";
     char azAccelMax[NUMBER_LEN] = "";
     char elAccelMax[NUMBER_LEN] = "";
+    char catalogNumber[NUMBER_LEN] = "";
     char siteLat[NUMBER_LEN] = "";
     char siteLon[NUMBER_LEN] = "";
     char tinygsUsername[STRING_LEN] = "";
@@ -98,7 +107,8 @@ class WebUI {
     iotwebconf::NumberParameter paramElSpeedMax = iotwebconf::NumberParameter("Elevation motor max speed in steps per second", "elSpeedMax", elSpeedMax, NUMBER_LEN, "200");
     iotwebconf::NumberParameter paramAzAccelMax = iotwebconf::NumberParameter("Azimuth motor acceleration in steps per second per second", "azAccelMax", azAccelMax, NUMBER_LEN, "50");
     iotwebconf::NumberParameter paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", elAccelMax, NUMBER_LEN, "50");
-    iotwebconf::ParameterGroup groupSite = iotwebconf::ParameterGroup("Site", "Site");
+    iotwebconf::ParameterGroup groupTracker = iotwebconf::ParameterGroup("Tracker", "Tracker");
+    iotwebconf::NumberParameter paramCatalogNumber = iotwebconf::NumberParameter("Satalite catalog number", "catalogNumber", catalogNumber, NUMBER_LEN, "0", nullptr, "step='1'");
     iotwebconf::NumberParameter paramSiteLat = iotwebconf::NumberParameter("Site latitude in degrees", "siteLat", siteLat, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     iotwebconf::NumberParameter paramSiteLon = iotwebconf::NumberParameter("Site longitude in degrees", "siteLon", siteLon, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     iotwebconf::ParameterGroup groupTinygs = iotwebconf::ParameterGroup("Tinygs", "TinyGS Station (to track the satellite your station is listening to)");

@@ -57,9 +57,10 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
     groupRotator.addItem(&paramElSpeedMax);
     groupRotator.addItem(&paramElAccelMax);
     m_iotWebConf.addParameterGroup(&groupRotator);
-    groupSite.addItem(&paramSiteLat);
-    groupSite.addItem(&paramSiteLon);
-    m_iotWebConf.addParameterGroup(&groupSite);
+    groupTracker.addItem(&paramCatalogNumber);
+    groupTracker.addItem(&paramSiteLat);
+    groupTracker.addItem(&paramSiteLon);
+    m_iotWebConf.addParameterGroup(&groupTracker);
     groupTinygs.addItem(&paramTinygsUsername);
     groupTinygs.addItem(&paramTinygsPassword);
     groupTinygs.addItem(&paramTinygsStation);

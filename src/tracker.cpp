@@ -40,7 +40,7 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
 }
 
 void Tracker::restart(void) {
-    predictor.init(46494);
+    predictor.init(webUI.getCatalogNumber());
     predictor.site(webUI.getSiteLat() * DEG_TO_RAD, webUI.getSiteLon() * DEG_TO_RAD);
     state = TRACKER_STATE_STARTED;
 }
