@@ -67,6 +67,9 @@ class WebUI {
     float getElAccelMax() { return atof(elAccelMax); }
     float getSiteLat() { return atof(siteLat); }
     float getSiteLon() { return atof(siteLon); };
+    char *getTinygsUsername() { return tinygsUsername; };
+    char *getTinygsPassword() { return tinygsPassword; };
+    char *getTinygsStation() { return tinygsStation; };
     char *getThingName() { return m_iotWebConf.getThingName(); }
 
   private:
@@ -84,6 +87,9 @@ class WebUI {
     char elAccelMax[NUMBER_LEN] = "";
     char siteLat[NUMBER_LEN] = "";
     char siteLon[NUMBER_LEN] = "";
+    char tinygsUsername[STRING_LEN] = "";
+    char tinygsPassword[STRING_LEN] = "";
+    char tinygsStation[STRING_LEN] = "";
 
     iotwebconf::ParameterGroup groupRotator = iotwebconf::ParameterGroup("Rotator", "Rotator");
     iotwebconf::NumberParameter paramAzStepsPerRev = iotwebconf::NumberParameter("Azimuth motor resolution in steps per revolution", "azStepsPerRev", azStepsPerRev, NUMBER_LEN, "4075.7728");
@@ -95,6 +101,10 @@ class WebUI {
     iotwebconf::ParameterGroup groupSite = iotwebconf::ParameterGroup("Site", "Site");
     iotwebconf::NumberParameter paramSiteLat = iotwebconf::NumberParameter("Site latitude in degrees", "siteLat", siteLat, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     iotwebconf::NumberParameter paramSiteLon = iotwebconf::NumberParameter("Site longitude in degrees", "siteLon", siteLon, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
+    iotwebconf::ParameterGroup groupTinygs = iotwebconf::ParameterGroup("Tinygs", "TinyGS Station (to track the satellite your station is listening to)");
+    iotwebconf::TextParameter paramTinygsUsername = iotwebconf::TextParameter("MQTT Username", "tinygsUsername", tinygsUsername, STRING_LEN);
+    iotwebconf::TextParameter paramTinygsPassword = iotwebconf::TextParameter("MQTT Password", "tinygsPassword", tinygsPassword, STRING_LEN);
+    iotwebconf::TextParameter paramTinygsStation = iotwebconf::TextParameter("Station Name", "tinygsStation", tinygsStation, STRING_LEN);
     void handleRoot(void);
     void handleDashboard(void);
     void handleApi(void);

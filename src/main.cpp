@@ -26,6 +26,7 @@
 #include "rotator.h"
 #include "rotctld.h"
 #include "tracker.h"
+#include "tinygs.h"
 #include "thingpings.h"
 
 DNSServer *dnsServer;   // DNS server for the config WiFi access point
@@ -34,6 +35,7 @@ WebUI *webUI;           // config web interface
 Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
 Tracker *tracker;       // satellite tracker
+Tinygs *tinygs;         // TinyGS station follower
 
 void onWifiConnected(void) {
 
@@ -41,6 +43,7 @@ void onWifiConnected(void) {
     Thingpings::ping("Orbitrakr", webUI->getThingName());
     rotctld->restart();
     tracker->restart();
+    tinygs->restart();
 }
 
 void setup(void) {
@@ -54,6 +57,7 @@ void setup(void) {
     rotator = new Rotator(*webUI);
     rotctld = new Rotctld(4533, *rotator);
     tracker = new Tracker(*webUI, *rotator);
+    tinygs = new Tinygs(*webUI, *tracker);
 
     // FIXME
     rotator->azAxis.home();
