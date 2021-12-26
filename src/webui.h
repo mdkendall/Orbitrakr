@@ -108,7 +108,7 @@ class WebUI {
     iotwebconf::NumberParameter paramAzAccelMax = iotwebconf::NumberParameter("Azimuth motor acceleration in steps per second per second", "azAccelMax", azAccelMax, NUMBER_LEN, "50");
     iotwebconf::NumberParameter paramElAccelMax = iotwebconf::NumberParameter("Elevation motor acceleration in steps per second per second", "elAccelMax", elAccelMax, NUMBER_LEN, "50");
     iotwebconf::ParameterGroup groupTracker = iotwebconf::ParameterGroup("Tracker", "Tracker");
-    iotwebconf::NumberParameter paramCatalogNumber = iotwebconf::NumberParameter("Satalite catalog number", "catalogNumber", catalogNumber, NUMBER_LEN, "0", nullptr, "step='1'");
+    iotwebconf::NumberParameter paramCatalogNumber = iotwebconf::NumberParameter("Satellite catalog number", "catalogNumber", catalogNumber, NUMBER_LEN, "0", nullptr, "step='1'");
     iotwebconf::NumberParameter paramSiteLat = iotwebconf::NumberParameter("Site latitude in degrees", "siteLat", siteLat, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     iotwebconf::NumberParameter paramSiteLon = iotwebconf::NumberParameter("Site longitude in degrees", "siteLon", siteLon, NUMBER_LEN, "0.0", nullptr, "step='0.001'");
     iotwebconf::ParameterGroup groupTinygs = iotwebconf::ParameterGroup("Tinygs", "TinyGS Station (to track the satellite your station is listening to)");
