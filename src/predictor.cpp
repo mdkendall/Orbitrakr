@@ -82,22 +82,28 @@ void Predictor::propagate(time_t t) {
 
     // Calculate the time offset from the TLE epoch
     tsince = ((double)t - (double)epoch) / 60.0;
+#ifdef PREDICTOR_VERBOSE
     Serial.println(String("t: ") + String(t) + String(" tsince: ") + String(tsince));
+#endif
 
     // Calculate the satellite position and velocity vectors in the True Equator,
     // Mean Equinox (TEME) earth-centered inertial (non-rotating) reference frame.
     SGP4Funcs::sgp4(satrec, tsince, rteme, vteme);
+#ifdef PREDICTOR_VERBOSE
     Serial.println(String("TEME ") +
         String(" R: ") + String(rteme[0]) + String(" ") + String(rteme[1]) + String(" ") + String(rteme[2]) +
         String(" V: ") + String(vteme[0]) + String(" ") + String(vteme[1]) + String(" ") + String(vteme[2]));
+#endif
 
     // Convert to the Earth-Centered, Earth-Fixed (ECEF) rotating reference frame.
     double jdut1 = satrec.jdsatepoch + satrec.jdsatepochF + tsince/1440.0;
     AstroLib::teme_ecef(rteme, vteme, ateme, MathTimeLib::eTo, recef, vecef, aecef,
         0.0 /* unused when eqeterms is 0 */, jdut1, 0.0, 0.0, 0.0 /* ignore polar motion */, 0);
+#ifdef PREDICTOR_VERBOSE
     Serial.println(String("ECEF ") +
         String(" R: ") + String(recef[0]) + String(" ") + String(recef[1]) + String(" ") + String(recef[2]) +
         String(" V: ") + String(vecef[0]) + String(" ") + String(vecef[1]) + String(" ") + String(vecef[2]));
+#endif
 }
 
 /** @brief  Get the calculated satellite position
@@ -110,8 +116,10 @@ void Predictor::position(double& latgc, double& latgd, double& lon, double& hell
 
     // Convert ECEF coordinates to latitude, longitude and height
     AstroLib::ecef2ll(recef, latgc, latgd, lon, hellp);
+#ifdef PREDICTOR_VERBOSE
     Serial.println(String("Latgc: ") + String(latgc * RAD_TO_DEG) + String(" Latgd: ") + String(latgd * RAD_TO_DEG) +
         String(" Lon: ") + String(lon * RAD_TO_DEG) + String(" Hellp: ") + String(hellp));
+#endif
 }
 
 /** @brief  Specify a site location
@@ -134,6 +142,8 @@ void Predictor::look(double& rho, double& az, double& el) {
     // Calculate look angles from a given site
     double drho, daz, del;
     AstroLib::rv_razel(recef, vecef, rsecef, slatgd, slon, MathTimeLib::eTo, rho, az, el, drho, daz, del);
+#ifdef PREDICTOR_VERBOSE
     Serial.println(String("Site: Az: ") +
         String(az * RAD_TO_DEG) + String(" El: ") + String(el * RAD_TO_DEG) + String(" rho: ") + String(rho));
+#endif
 }
