@@ -26,8 +26,7 @@
 
 class RotatorAxis {
    public:
-    RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
-    uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4);
+    RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t pins[]);
     void doLoop(void);
 
     void setTarget(float pos);     // set target position in degrees
@@ -50,10 +49,11 @@ class RotatorAxis {
 class Rotator {
    public:
     Rotator(WebUI &webUI);
+    void reconfigure(void);
 
     WebUI &webUI;
-    RotatorAxis azAxis;     // azimuth axis
-    RotatorAxis elAxis;     // elevation axis
+    RotatorAxis *azAxis = nullptr;  // azimuth axis
+    RotatorAxis *elAxis = nullptr;  // elevation axis
 
    private:
     static void task(void *param);

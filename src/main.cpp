@@ -60,8 +60,8 @@ void setup(void) {
     tinygs = new Tinygs(*webUI, *tracker);
 
     // FIXME
-    rotator->azAxis.home();
-    rotator->elAxis.home();
+    rotator->azAxis->home();
+    rotator->elAxis->home();
 }
 
 void loop(void) {

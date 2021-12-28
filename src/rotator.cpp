@@ -21,9 +21,8 @@
 
 /* --- Rotator Axis --- */
 
-RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType,
-    uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4) :
-    stepper(motorInterfaceType, pin1, pin2, pin3, pin4) {
+RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t pins[]) :
+    stepper(motorInterfaceType, pins[0], pins[1], pins[2], pins[3]) {
 }
 
 void RotatorAxis::doLoop(void) {
@@ -55,16 +54,9 @@ void RotatorAxis::stop(void) {
 /* --- Rotator --- */
 
 Rotator::Rotator(WebUI &webUI) :
-    webUI(webUI),
-    azAxis(AccelStepper::HALF4WIRE, 13, 14, 12, 27),
-    elAxis(AccelStepper::HALF4WIRE, 32, 25, 26, 33) {
+    webUI(webUI) {
 
-    azAxis.stepsPerRev = webUI.getAzStepsPerRev(); elAxis.stepsPerRev = webUI.getElStepsPerRev();
-    azAxis.speedMax = webUI.getAzSpeedMax(); elAxis.speedMax = webUI.getElSpeedMax();
-    azAxis.accelMax = webUI.getAzAccelMax(); elAxis.accelMax = webUI.getElAccelMax();
-    azAxis.posMin = -180.0; azAxis.posMax = 180.0;
-    elAxis.posMin = 0.0; elAxis.posMax = 90.0;
-
+    reconfigure();
     WebUIItemGroup &itemGroup = webUI.addItemGroup("rotator", "Rotator");
     itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;");
     itemEl = &itemGroup.addItem("el", "Elevation", "&deg;");
@@ -72,13 +64,31 @@ Rotator::Rotator(WebUI &webUI) :
     xTaskCreatePinnedToCore(task, "Rotator", 2048, this, 3, &taskHandle, 1);
 }
 
+void Rotator::reconfigure(void) {
+
+    if (azAxis) delete(azAxis);
+    if (elAxis) delete(elAxis);
+
+    uint8_t pins[4] = {0};
+    azAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getAzMotorPins(pins));
+    Serial.printf("AzAxis: %d [%d %d %d %d]\n", webUI.getAzMotorType(), pins[0], pins[1], pins[2], pins[3]);
+    elAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getElMotorPins(pins));
+    Serial.printf("ElAxis: %d [%d %d %d %d]\n", webUI.getElMotorType(), pins[0], pins[1], pins[2], pins[3]);
+
+    azAxis->stepsPerRev = webUI.getAzStepsPerRev(); elAxis->stepsPerRev = webUI.getElStepsPerRev();
+    azAxis->speedMax = webUI.getAzSpeedMax(); elAxis->speedMax = webUI.getElSpeedMax();
+    azAxis->accelMax = webUI.getAzAccelMax(); elAxis->accelMax = webUI.getElAccelMax();
+    azAxis->posMin = -180.0; azAxis->posMax = 180.0;
+    elAxis->posMin = 0.0; elAxis->posMax = 90.0;
+}
+
 void Rotator::task(void *param) {
     Rotator *rotator = (Rotator*)param;
     while (true) {
-        rotator->azAxis.doLoop();
-        rotator->elAxis.doLoop();
-        rotator->itemAz->setValue(rotator->azAxis.getPosition());
-        rotator->itemEl->setValue(rotator->elAxis.getPosition());
+        rotator->azAxis->doLoop();
+        rotator->elAxis->doLoop();
+        rotator->itemAz->setValue(rotator->azAxis->getPosition());
+        rotator->itemEl->setValue(rotator->elAxis->getPosition());
         vTaskDelay(1);
     }
 }

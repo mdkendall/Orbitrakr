@@ -60,6 +60,10 @@ class WebUI {
     WebUIItemGroup &addItemGroup(const char *id, const char *label);
 
     /* rotator */
+    int getAzMotorType() { return atoi(azMotorType); };
+    int getElMotorType() { return atoi(elMotorType); };
+    uint8_t *getAzMotorPins(uint8_t *pins) { return parsePins(azMotorPins, pins); };
+    uint8_t *getElMotorPins(uint8_t *pins) { return parsePins(elMotorPins, pins); };
     float getAzStepsPerRev() { return atof(azStepsPerRev); }
     float getElStepsPerRev() { return atof(elStepsPerRev); }
     float getAzSpeedMax() { return atof(azSpeedMax); }
@@ -87,9 +91,13 @@ class WebUI {
 
     std::list<WebUIItemGroup> itemGroups;
 
+    char azMotorType[STRING_LEN] = "";
+    char azMotorPins[STRING_LEN] = "";
     char azStepsPerRev[NUMBER_LEN] = "";
     char elStepsPerRev[NUMBER_LEN] = "";
     char azSpeedMax[NUMBER_LEN] = "";
+    char elMotorType[STRING_LEN] = "";
+    char elMotorPins[STRING_LEN] = "";
     char elSpeedMax[NUMBER_LEN] = "";
     char azAccelMax[NUMBER_LEN] = "";
     char elAccelMax[NUMBER_LEN] = "";
@@ -100,7 +108,14 @@ class WebUI {
     char tinygsPassword[STRING_LEN] = "";
     char tinygsStation[STRING_LEN] = "";
 
+    const char motorTypeValues[3][STRING_LEN] = { "1", "2", "8" };
+    const char motorTypeNames[3][STRING_LEN] = { "Driver (Step, Dir)", "2-Wire (CoilA, CoilB)", "4-Wire (CoilA+, CoilA-, CoilB+, CoilB-)" };
+
     iotwebconf::ParameterGroup groupRotator = iotwebconf::ParameterGroup("Rotator", "Rotator");
+    iotwebconf::SelectParameter paramAzMotorType = iotwebconf::SelectParameter("Azimuth motor type", "azMotorType", azMotorType, STRING_LEN, (char*)motorTypeValues, (char*)motorTypeNames, 3, STRING_LEN);
+    iotwebconf::SelectParameter paramElMotorType = iotwebconf::SelectParameter("Elevation motor type", "elMotorType", elMotorType, STRING_LEN, (char*)motorTypeValues, (char*)motorTypeNames, 3, STRING_LEN);
+    iotwebconf::TextParameter paramAzMotorPins = iotwebconf::TextParameter("Azimuth motor GPIO pins (comma separated list)", "azMotorPins", azMotorPins, STRING_LEN);
+    iotwebconf::TextParameter paramElMotorPins = iotwebconf::TextParameter("Elevation motor GPIO pins (comma separated list)", "elMotorPins", elMotorPins, STRING_LEN);
     iotwebconf::NumberParameter paramAzStepsPerRev = iotwebconf::NumberParameter("Azimuth motor resolution in steps per revolution", "azStepsPerRev", azStepsPerRev, NUMBER_LEN, "4075.7728");
     iotwebconf::NumberParameter paramElStepsPerRev = iotwebconf::NumberParameter("Elevation motor resolution in steps per revolution", "elStepsPerRev", elStepsPerRev, NUMBER_LEN, "4075.7728");
     iotwebconf::NumberParameter paramAzSpeedMax = iotwebconf::NumberParameter("Azimuth motor max speed in steps per second", "azSpeedMax", azSpeedMax, NUMBER_LEN, "200");
@@ -118,6 +133,8 @@ class WebUI {
     void handleRoot(void);
     void handleDashboard(void);
     void handleApi(void);
+
+    uint8_t *parsePins(const char *pinList, uint8_t *pins);
 };
 
 #endif

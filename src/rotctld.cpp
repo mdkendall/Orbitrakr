@@ -78,13 +78,13 @@ void Rotctld::handleCommand(String request) {
 
     if ((strcmp(request.c_str(), "R") == 0) ||
         (strcmp(request.c_str(), "reset") == 0)) {
-        rotator.azAxis.home();
-        rotator.elAxis.home();
+        rotator.azAxis->home();
+        rotator.elAxis->home();
         reportError(RIG_OK);
     } else if ((strcmp(request.c_str(), "S") == 0) ||
                (strcmp(request.c_str(), "stop") == 0)) {
-        rotator.azAxis.stop();
-        rotator.elAxis.stop();
+        rotator.azAxis->stop();
+        rotator.elAxis->stop();
         reportError(RIG_OK);
     } else if ((strcmp(request.c_str(), "_") == 0) ||
                (strcmp(request.c_str(), "get_info") == 0)) {
@@ -92,12 +92,12 @@ void Rotctld::handleCommand(String request) {
         client.write(s);
     } else if ((strcmp(request.c_str(), "p") == 0) ||
                (strcmp(request.c_str(), "get_pos") == 0)) {
-        snprintf(s, sizeof(s), "%.2f\r\n%.2f\r\n", rotator.azAxis.getPosition(), rotator.elAxis.getPosition());
+        snprintf(s, sizeof(s), "%.2f\r\n%.2f\r\n", rotator.azAxis->getPosition(), rotator.elAxis->getPosition());
         client.write(s);
     } else if ((sscanf(request.c_str(), "P %f %f", &az, &el) == 2) ||
                (sscanf(request.c_str(), "set_pos %f %f", &az, &el) == 2)) {
-        rotator.azAxis.setTarget(az);
-        rotator.elAxis.setTarget(el);
+        rotator.azAxis->setTarget(az);
+        rotator.elAxis->setTarget(el);
         reportError(RIG_OK);
     } else {
         reportError(RIG_EPROTO);

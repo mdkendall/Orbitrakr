@@ -73,8 +73,8 @@ void Tracker::task(void *param) {
                 tracker->predictor.position(latgc, latgd, lon, hellp);
                 tracker->predictor.look(rho, az, el);
                 if (el > 0) {
-                    tracker->rotator.azAxis.setTarget(az*RAD_TO_DEG);
-                    tracker->rotator.elAxis.setTarget(el*RAD_TO_DEG);
+                    tracker->rotator.azAxis->setTarget(az*RAD_TO_DEG);
+                    tracker->rotator.elAxis->setTarget(el*RAD_TO_DEG);
                 }
                 tracker->itemLatgd->setValue(latgd*RAD_TO_DEG);
                 tracker->itemLon->setValue(lon*RAD_TO_DEG);

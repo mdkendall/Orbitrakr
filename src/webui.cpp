@@ -50,9 +50,13 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
     m_webServer(&webServer) {
 
     Serial.println("Web UI initialising.");
+    groupRotator.addItem(&paramAzMotorType);
+    groupRotator.addItem(&paramAzMotorPins);
     groupRotator.addItem(&paramAzStepsPerRev);
     groupRotator.addItem(&paramAzSpeedMax);
     groupRotator.addItem(&paramAzAccelMax);
+    groupRotator.addItem(&paramElMotorType);
+    groupRotator.addItem(&paramElMotorPins);
     groupRotator.addItem(&paramElStepsPerRev);
     groupRotator.addItem(&paramElSpeedMax);
     groupRotator.addItem(&paramElAccelMax);
@@ -138,6 +142,11 @@ void WebUI::handleApi(void) {
 
     m_webServer->sendHeader("Access-Control-Allow-Origin", "*");
     m_webServer->send(200, "application/json; charset=UTF-8", s);
+}
+
+uint8_t* WebUI::parsePins(const char *pinList, uint8_t *pins) {
+    sscanf(pinList, "%hhd ,%hhd ,%hhd ,%hhd", &pins[0], &pins[1], &pins[2], &pins[3]);
+    return pins;
 }
 
 WebUIItemGroup& WebUI::addItemGroup(const char *id, const char *label) {
