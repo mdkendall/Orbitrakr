@@ -136,6 +136,7 @@ void WebUI::handleApi(void) {
             doc[itemGroup.id]["items"][item.id]["label"] = item.label;
             doc[itemGroup.id]["items"][item.id]["value"] = item.getValue();
             doc[itemGroup.id]["items"][item.id]["units"] = item.units;
+            doc[itemGroup.id]["items"][item.id]["dp"] = item.dp;
         }
     }
     serializeJson(doc, s);
@@ -160,15 +161,15 @@ WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
     id(id), label(label) {
 };
 
-WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units) {
+WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units, int dp) {
 
-    WebUIItem item(id, label, units);
+    WebUIItem item(id, label, units, dp);
     this->items.push_back(item);
     return this->items.back();
 }
 
-WebUIItem::WebUIItem(const char *id, const char *label, const char *units) :
-    id(id), label(label), units(units) {
+WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp) :
+    id(id), label(label), units(units), dp(dp) {
 }
 
 void WebUIItem::setValue(float value) {

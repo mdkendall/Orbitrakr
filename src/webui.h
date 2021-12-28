@@ -30,13 +30,14 @@
 
 struct WebUIItem {
   public:
-    WebUIItem(const char *id, const char *label, const char *units);
+    WebUIItem(const char *id, const char *label, const char *units, int dp);
     void setValue(float value);
     float getValue(void);
 
     const char *id;
     const char *label;
     const char *units;
+    int dp;
 
   private:
     float value;
@@ -45,7 +46,7 @@ struct WebUIItem {
 class WebUIItemGroup {
   public:
     WebUIItemGroup(const char *id, const char *label);
-    WebUIItem &addItem(const char *id, const char *label, const char *units = "");
+    WebUIItem &addItem(const char *id, const char *label, const char *units = "", int dp = 1);
 
     const char *id;
     const char *label;

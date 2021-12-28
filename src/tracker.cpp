@@ -31,10 +31,10 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     WebUIItemGroup &itemGroup = webUI.addItemGroup("tracker", "Tracker");
     itemLatgd = &itemGroup.addItem("latgd", "Latitude", "&deg;");
     itemLon = &itemGroup.addItem("lon", "Longitude", "&deg;");
-    itemHellp = &itemGroup.addItem("hellp", "Altitude", "km");
+    itemHellp = &itemGroup.addItem("hellp", "Altitude", "km", 0);
     itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;");
     itemEl = &itemGroup.addItem("el", "Elevation", "&deg;");
-    itemRho = &itemGroup.addItem("rho", "Range", "km");
+    itemRho = &itemGroup.addItem("rho", "Range", "km", 0);
 
     xTaskCreatePinnedToCore(task, "Tracker", 4096, this, 2, &taskHandle, 1);
 }

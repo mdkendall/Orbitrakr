@@ -36,7 +36,7 @@ Tinygs::Tinygs(WebUI &webUI, Tracker &tracker) :
     pubsubclient = new PubSubClient(espClient);
 
     WebUIItemGroup &itemGroup = webUI.addItemGroup("tinygs", "TinyGS Station");
-    itemCatalogNumber = &itemGroup.addItem("catalognumber", "NORAD Catalog Number", "");
+    itemCatalogNumber = &itemGroup.addItem("catalognumber", "NORAD Catalog Number", "", 0);
     itemCatalogNumber->setValue(0);
 
     xTaskCreatePinnedToCore(task, "Tinygs", 8192, this, 2, &taskHandle, 1);
