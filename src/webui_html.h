@@ -1,6 +1,17 @@
 
 static const char dashboardHtml[] = R"EOF(
 <div id='app'>
+    <div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="-110 -110 220 220">
+            <circle cx="0" cy="0" r="100" stroke="gray" stroke-width="1" fill="none"/>
+            <circle cx="0" cy="0" r="66" stroke="gray" stroke-width="1" fill="none"/>
+            <circle cx="0" cy="0" r="33" stroke="gray" stroke-width="1" fill="none"/>
+            <line x1="0" y1="-105" x2="0" y2="105" stroke="gray" stroke-width="1"/>
+            <line x1="-105" y1="0" x2="105" y2="0" stroke="gray" stroke-width="1"/>
+            <circle :cx="plot.rx" :cy="plot.ry" r="8" stroke="black" stroke-width="2" fill="#ACC2A3"/>
+            <circle :cx="plot.tx" :cy="plot.ty" r="5" stroke="black" stroke-width="2" fill="#5E72A7"/>
+        </svg>
+    </div>
     <div v-for="itemGroup in info">
         <h3>{{itemGroup.label}}</h3>
         <div v-for="item in itemGroup.items">
@@ -16,13 +27,20 @@ static const char dashboardScript[] = R"EOF(
         el: '#app',
         data: {
             info: null,
-            timer: ''
+            plot: {"rx":0, "ry":0, "tx":0, "ty":0},
+            timer: '',
+            updatePlot () {
+                this.plot.rx = 100*(1-this.info.rotator.items.el.value/90)*Math.sin(Math.PI*this.info.rotator.items.az.value/180);
+                this.plot.ry = -100*(1-this.info.rotator.items.el.value/90)*Math.cos(Math.PI*this.info.rotator.items.az.value/180);
+                this.plot.tx = 100*(1-this.info.tracker.items.el.value/90)*Math.sin(Math.PI*this.info.tracker.items.az.value/180);
+                this.plot.ty = -100*(1-this.info.tracker.items.el.value/90)*Math.cos(Math.PI*this.info.tracker.items.az.value/180);
+            }
         },
         mounted () {
             this.timer = setInterval(function() {
-                fetch('/api').then(response => response.json()).then(data => (this.info = data));
+                fetch('/api').then(response => response.json()).then(data => {this.info = data; this.updatePlot();});
             }.bind(this), 1000);
-        }
+        },
     });
 </script>
 )EOF";
