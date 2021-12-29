@@ -29,6 +29,7 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     predictor() {
 
     WebUIItemGroup &itemGroup = webUI.addItemGroup("tracker", "Tracker");
+    itemCatalogNumber = &itemGroup.addItem("catalognumber", "Satellite", "", 0);
     itemLatgd = &itemGroup.addItem("latgd", "Latitude", "&deg;");
     itemLon = &itemGroup.addItem("lon", "Longitude", "&deg;");
     itemHellp = &itemGroup.addItem("hellp", "Altitude", "km", 0);
@@ -43,7 +44,7 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
  *  Intended to be called after a change in configuration or network connectivity.
  */
 void Tracker::restart(void) {
-    predictor.init(webUI.getCatalogNumber());
+    setSat(webUI.getCatalogNumber());
     predictor.site(webUI.getSiteLat() * DEG_TO_RAD, webUI.getSiteLon() * DEG_TO_RAD);
     state = TRACKER_STATE_STARTED;
 }
@@ -51,6 +52,7 @@ void Tracker::restart(void) {
 /** @brief  Set the tracked satellite by NORAD catalog number.
  */
 void Tracker::setSat(uint32_t catalogNumber) {
+    itemCatalogNumber->setValue(catalogNumber);
     predictor.init(catalogNumber);
 }
 

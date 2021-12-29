@@ -41,6 +41,7 @@ class Tracker {
     static void task(void *param);
 
     WebUI& webUI;
+    WebUIItem *itemCatalogNumber;
     WebUIItem *itemLatgd;
     WebUIItem *itemLon;
     WebUIItem *itemHellp;
