@@ -170,6 +170,7 @@ WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char
 
 WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp) :
     id(id), label(label), units(units), dp(dp) {
+    this->value = 0.;
 }
 
 void WebUIItem::setValue(float value) {
