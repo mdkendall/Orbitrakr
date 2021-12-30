@@ -30,11 +30,11 @@ Orbitrakr can be manually commanded to point in a given direction directly via t
 
 Orbitrakr presents an interface on port 4533 compatible with the [Hamlib](https://github.com/Hamlib/Hamlib) rotctld protocol. This means Orbitrakr is compatible with any software that will talk to rotctld, for example [Gpredict](http://gpredict.oz9aec.net/) and the [SatNOGS](https://wiki.satnogs.org/) client.
 
-Programs like this, run on a separate computer, can be used to track many satellites and command the rotator to point the antenna as they pass overhead.
+Programs like this, run on a separate computer, can be used to manually control the rotator, or to track satellites and command the rotator to point the antenna as they pass overhead.
 
 ### Built-in Tracker
 
-Orbitrakr can be commanded to track a specific satellite by NORAD catalog number. It can fetch Two-Line Element sets directly from Celestrak and contains an implementation of the Simplified General Perturbations (SGP4) propagator capable of predicting the position of the satellite over time.
+You don't need to use an external program like Gpredict because Orbitrakr can be configured to track a specific satellite directly by NORAD catalog number. It can fetch Two-Line Element sets from Celestrak and contains an implementation of the Simplified General Perturbations (SGP4) propagator capable of predicting the position of the satellite over time.
 
 ### TinyGS Follower
 
