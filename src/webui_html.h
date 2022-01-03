@@ -14,8 +14,10 @@ static const char dashboardHtml[] = R"EOF(
     </div>
     <div v-for="itemGroup in info">
         <h3>{{itemGroup.label}}</h3>
-        <div v-for="item in itemGroup.items">
-            {{item.label}} : {{(item.value/1).toFixed(item.dp)}} <span v-html="item.units"></span>
+        <div>
+            <div v-for="item in itemGroup.items">
+                {{item.label}} : {{(item.value/1).toFixed(item.dp)}} <span v-html="item.units"></span>
+            </div>
         </div>
     </div>
 </div>
@@ -28,13 +30,15 @@ static const char dashboardScript[] = R"EOF(
         data: {
             info: null,
             plot: {"rx":0, "ry":0, "tx":0, "ty":0},
-            timer: '',
+            timer: ''
+        },
+        methods: {
             updatePlot () {
                 this.plot.rx = 100*(1-this.info.rotator.items.el.value/90)*Math.sin(Math.PI*this.info.rotator.items.az.value/180);
                 this.plot.ry = -100*(1-this.info.rotator.items.el.value/90)*Math.cos(Math.PI*this.info.rotator.items.az.value/180);
                 this.plot.tx = 100*(1-this.info.tracker.items.el.value/90)*Math.sin(Math.PI*this.info.tracker.items.az.value/180);
                 this.plot.ty = -100*(1-this.info.tracker.items.el.value/90)*Math.cos(Math.PI*this.info.tracker.items.az.value/180);
-            }
+            },
         },
         mounted () {
             this.timer = setInterval(function() {
