@@ -40,7 +40,8 @@ bool Predictor::init(uint32_t catNum) {
     catalogNumber = catNum;
 
     // Fetch the latest TLE from Celestrak
-    url = String("http://celestrak.com/satcat/tle.php?CATNR=") + String(catalogNumber);
+    url = String("http://celestrak.com/NORAD/elements/gp.php?CATNR=") + String(catalogNumber);
+    Serial.println(url);
     http.begin(url);
     if (http.GET() == HTTP_CODE_OK) {
         WiFiClient response = http.getStream();
