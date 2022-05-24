@@ -30,7 +30,7 @@
 
 struct WebUIItem {
   public:
-    WebUIItem(const char *id, const char *label, const char *units, int dp);
+    WebUIItem(const char *id, const char *label, const char *units, int dp, bool settable);
     void setValue(float value);
     float getValue(void);
 
@@ -38,6 +38,7 @@ struct WebUIItem {
     const char *label;
     const char *units;
     int dp;
+    bool settable;
 
   private:
     float value;
@@ -58,7 +59,11 @@ class WebUI {
     WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb);
     void doLoop(void);
 
+    /* --- Run-time properties presented on the Dashbard --- */
+
     WebUIItemGroup &addItemGroup(const char *id, const char *label);
+
+    /* --- Static configuration presented on the Configure page --- */
 
     /* rotator */
     int getAzMotorType() { return atoi(azMotorType); };

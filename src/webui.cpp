@@ -35,10 +35,12 @@ class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
             String("<div><img display='inherit' src='data:image/png;base64,") +
             String(logoBase64) + String("'/></div><br />\n");
     }
-    // Nicer padding on the config page
+    // Nicer padding on the config page.
+    // Small inputs and buttons on the dashboard.
     String getStyle() override {
         String s = HtmlFormatProvider::getStyle();
         s.replace("margin: 0px", "margin-bottom: 20px");
+        s.replace("</style>", " input.dash {width:50px;} button.dash {line-height:2rem;font-size:1rem;width:40px;}</style>");
         return s;
     }
 };
@@ -129,7 +131,7 @@ void WebUI::handleDashboard(void) {
 void WebUI::handleApi(void) {
 
     String s;
-    DynamicJsonDocument doc(1024);
+    DynamicJsonDocument doc(1536);
     for (auto &itemGroup : itemGroups) {
         doc[itemGroup.id]["label"] = itemGroup.label;
         for (auto &item : itemGroup.items) {
@@ -137,6 +139,7 @@ void WebUI::handleApi(void) {
             doc[itemGroup.id]["items"][item.id]["value"] = item.getValue();
             doc[itemGroup.id]["items"][item.id]["units"] = item.units;
             doc[itemGroup.id]["items"][item.id]["dp"] = item.dp;
+            doc[itemGroup.id]["items"][item.id]["settable"] = item.settable;
         }
     }
     serializeJson(doc, s);
@@ -163,13 +166,13 @@ WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
 
 WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units, int dp) {
 
-    WebUIItem item(id, label, units, dp);
+    WebUIItem item(id, label, units, dp, true);
     this->items.push_back(item);
     return this->items.back();
 }
 
-WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp) :
-    id(id), label(label), units(units), dp(dp) {
+WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp, bool settable) :
+    id(id), label(label), units(units), dp(dp), settable(settable) {
     this->value = 0.;
 }
 

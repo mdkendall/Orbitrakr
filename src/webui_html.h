@@ -12,11 +12,12 @@ static const char dashboardHtml[] = R"EOF(
             <circle :cx="plot.tx" :cy="plot.ty" r="5" stroke="black" stroke-width="2" fill="#5E72A7"/>
         </svg>
     </div>
-    <div v-for="itemGroup in info">
+    <div v-for="(itemGroup, itemGroupId) in info">
         <h3>{{itemGroup.label}}</h3>
         <div>
-            <div v-for="item in itemGroup.items">
+            <div v-for="(item, itemId) in itemGroup.items">
                 {{item.label}} : {{(item.value/1).toFixed(item.dp)}} <span v-html="item.units"></span>
+                <template v-if="item.settable"><input class="dash" v-bind:ref="itemGroupId+'.'+itemId"/> <button class="dash" v-on:click="putItem(itemGroupId, itemId, $refs[itemGroupId+'.'+itemId][0].value)">Set</button></template>
             </div>
         </div>
     </div>
@@ -38,6 +39,10 @@ static const char dashboardScript[] = R"EOF(
                 this.plot.ry = -100*(1-this.info.rotator.items.el.value/90)*Math.cos(Math.PI*this.info.rotator.items.az.value/180);
                 this.plot.tx = 100*(1-this.info.tracker.items.el.value/90)*Math.sin(Math.PI*this.info.tracker.items.az.value/180);
                 this.plot.ty = -100*(1-this.info.tracker.items.el.value/90)*Math.cos(Math.PI*this.info.tracker.items.az.value/180);
+            },
+            putItem(itemGroupId, itemId, value) {
+                setData = JSON.stringify({value: value});
+                fetch(`/api/${itemGroupId}/items/${itemId}`, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: setData});
             },
         },
         mounted () {
