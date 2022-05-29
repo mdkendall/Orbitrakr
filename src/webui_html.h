@@ -17,7 +17,7 @@ static const char dashboardHtml[] = R"EOF(
         <div>
             <div v-for="(item, itemId) in itemGroup.items">
                 {{item.label}} : {{(item.value/1).toFixed(item.dp)}} <span v-html="item.units"></span>
-                <template v-if="item.settable"><input class="dash" v-bind:ref="itemGroupId+'.'+itemId"/> <button class="dash" v-on:click="putItem(itemGroupId, itemId, $refs[itemGroupId+'.'+itemId][0].value)">Set</button></template>
+                <template v-if="item.requestable"><input class="dash" v-bind:ref="itemGroupId+'.'+itemId"/> <button class="dash" v-on:click="putItem(itemGroupId, itemId, $refs[itemGroupId+'.'+itemId][0].value)">Set</button></template>
             </div>
         </div>
     </div>

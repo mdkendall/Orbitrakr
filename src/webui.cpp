@@ -22,6 +22,7 @@
 #include "webui_html.h"
 
 #include <ArduinoJson.h>
+#include <uri/UriBraces.h>
 
 static const char thingName[] = "Orbitrakr";
 static const char wifiInitialApPassword[] = "password";
@@ -82,7 +83,8 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
     // -- Set up required URL handlers on the web server.
     m_webServer->on("/", [this] { handleRoot(); });
     m_webServer->on("/dashboard", [this] { handleDashboard(); });
-    m_webServer->on("/api", [this] { handleApi(); });
+    m_webServer->on("/api", HTTP_GET, [this] { handleApiGet(); });
+    m_webServer->on(UriBraces("/api/{}/items/{}"), HTTP_PUT, [this] { handleApiPut(); });
     m_webServer->on("/config", [this] { m_iotWebConf.handleConfig(); });
     m_webServer->onNotFound([this] { m_iotWebConf.handleNotFound(); });
 
@@ -128,7 +130,7 @@ void WebUI::handleDashboard(void) {
     m_webServer->send(200, "text/html; charset=UTF-8", s);
 }
 
-void WebUI::handleApi(void) {
+void WebUI::handleApiGet(void) {
 
     String s;
     DynamicJsonDocument doc(1536);
@@ -139,13 +141,39 @@ void WebUI::handleApi(void) {
             doc[itemGroup.id]["items"][item.id]["value"] = item.getValue();
             doc[itemGroup.id]["items"][item.id]["units"] = item.units;
             doc[itemGroup.id]["items"][item.id]["dp"] = item.dp;
-            doc[itemGroup.id]["items"][item.id]["settable"] = item.settable;
+            doc[itemGroup.id]["items"][item.id]["requestable"] = item.requestable;
         }
     }
     serializeJson(doc, s);
 
     m_webServer->sendHeader("Access-Control-Allow-Origin", "*");
     m_webServer->send(200, "application/json; charset=UTF-8", s);
+}
+
+void WebUI::handleApiPut(void) {
+
+    String itemGroupId = m_webServer->pathArg(0);
+    String itemId = m_webServer->pathArg(1);
+    String postBody = m_webServer->arg("plain");
+    DynamicJsonDocument doc(512);
+    DeserializationError error = deserializeJson(doc, postBody);
+
+    if (!error) {
+        for (auto &itemGroup : itemGroups) {
+            if (itemGroupId == itemGroup.id) {
+                for (auto &item : itemGroup.items) {
+                    if (itemId == item.id) {
+                        if (item.requestable) {
+                            float value = doc["value"].as<float>();
+                            item.setReqValue(value);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    m_webServer->send(200, "text/plain", "OK");
 }
 
 uint8_t* WebUI::parsePins(const char *pinList, uint8_t *pins) {
@@ -164,16 +192,18 @@ WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
     id(id), label(label) {
 };
 
-WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units, int dp) {
+WebUIItem& WebUIItemGroup::addItem(const char *id, const char *label, const char *units, int dp, bool requestable) {
 
-    WebUIItem item(id, label, units, dp, true);
+    WebUIItem item(id, label, units, dp, requestable);
     this->items.push_back(item);
     return this->items.back();
 }
 
-WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp, bool settable) :
-    id(id), label(label), units(units), dp(dp), settable(settable) {
+WebUIItem::WebUIItem(const char *id, const char *label, const char *units, int dp, bool requestable) :
+    id(id), label(label), units(units), dp(dp), requestable(requestable) {
     this->value = 0.;
+    this->reqValue = 0.;
+    this->req = false;
 }
 
 void WebUIItem::setValue(float value) {
@@ -182,4 +212,14 @@ void WebUIItem::setValue(float value) {
 
 float WebUIItem::getValue(void) {
     return this->value;
+}
+
+void WebUIItem::setReqValue(float value) {
+    this->reqValue = value;
+    this->req = true;
+}
+
+float WebUIItem::getReqValue(void) {
+    this->req = false;
+    return this->reqValue;
 }

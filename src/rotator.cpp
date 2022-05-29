@@ -58,8 +58,8 @@ Rotator::Rotator(WebUI &webUI) :
 
     reconfigure();
     WebUIItemGroup &itemGroup = webUI.addItemGroup("rotator", "Rotator");
-    itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;");
-    itemEl = &itemGroup.addItem("el", "Elevation", "&deg;");
+    itemAz = &itemGroup.addItem("az", "Azimuth", "&deg;", 1, true);
+    itemEl = &itemGroup.addItem("el", "Elevation", "&deg;", 1, true);
 
     xTaskCreatePinnedToCore(task, "Rotator", 2048, this, 3, &taskHandle, 1);
 }
@@ -89,6 +89,8 @@ void Rotator::task(void *param) {
         rotator->elAxis->doLoop();
         rotator->itemAz->setValue(rotator->azAxis->getPosition());
         rotator->itemEl->setValue(rotator->elAxis->getPosition());
+        if (rotator->itemAz->req) rotator->azAxis->setTarget(rotator->itemAz->getReqValue());
+        if (rotator->itemEl->req) rotator->elAxis->setTarget(rotator->itemEl->getReqValue());
         vTaskDelay(1);
     }
 }

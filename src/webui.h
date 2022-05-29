@@ -30,24 +30,28 @@
 
 struct WebUIItem {
   public:
-    WebUIItem(const char *id, const char *label, const char *units, int dp, bool settable);
+    WebUIItem(const char *id, const char *label, const char *units, int dp, bool requestable);
     void setValue(float value);
     float getValue(void);
+    void setReqValue(float value);
+    float getReqValue(void);
 
     const char *id;
     const char *label;
     const char *units;
     int dp;
-    bool settable;
+    bool requestable;
+    bool req;
 
   private:
     float value;
+    float reqValue;
 };
 
 class WebUIItemGroup {
   public:
     WebUIItemGroup(const char *id, const char *label);
-    WebUIItem &addItem(const char *id, const char *label, const char *units = "", int dp = 1);
+    WebUIItem &addItem(const char *id, const char *label, const char *units = "", int dp = 1, bool requestable = false);
 
     const char *id;
     const char *label;
@@ -138,7 +142,8 @@ class WebUI {
     iotwebconf::TextParameter paramTinygsStation = iotwebconf::TextParameter("Station Name", "tinygsStation", tinygsStation, STRING_LEN);
     void handleRoot(void);
     void handleDashboard(void);
-    void handleApi(void);
+    void handleApiGet(void);
+    void handleApiPut(void);
 
     uint8_t *parsePins(const char *pinList, uint8_t *pins);
 };
