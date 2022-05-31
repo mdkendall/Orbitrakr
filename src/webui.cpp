@@ -41,7 +41,7 @@ class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
     String getStyle() override {
         String s = HtmlFormatProvider::getStyle();
         s.replace("margin: 0px", "margin-bottom: 20px");
-        s.replace("</style>", " input.dash {width:50px;} button.dash {line-height:2rem;font-size:1rem;width:40px;}</style>");
+        s.replace("</style>", "div.dash {display: flex; justify-content: space-between;} .dash-req input {padding:2px;width:50px;} .dash-req button {line-height:1.5rem;font-size:1rem;width:40px;}</style>");
         return s;
     }
 };
