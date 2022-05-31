@@ -29,7 +29,7 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
     predictor() {
 
     WebUIItemGroup &itemGroup = webUI.addItemGroup("tracker", "Tracker");
-    itemCatalogNumber = &itemGroup.addItem("catalognumber", "Satellite", "", 0);
+    itemCatalogNumber = &itemGroup.addItem("catalognumber", "Satellite", "", 0, true);
     itemLatgd = &itemGroup.addItem("latgd", "Latitude", "&deg;");
     itemLon = &itemGroup.addItem("lon", "Longitude", "&deg;");
     itemHellp = &itemGroup.addItem("hellp", "Altitude", "km", 0);
@@ -84,6 +84,8 @@ void Tracker::task(void *param) {
                 tracker->itemAz->setValue(az*RAD_TO_DEG);
                 tracker->itemEl->setValue(el*RAD_TO_DEG);
                 tracker->itemRho->setValue(rho);
+
+                if (tracker->itemCatalogNumber->req) tracker->setSat(tracker->itemCatalogNumber->getReqValue());
                 break;
         }
         vTaskDelay(1000);
