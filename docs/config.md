@@ -4,17 +4,27 @@ On initial startup Orbitrakr creates a Wi-Fi access point with SSID `Orbitrakr` 
 
 On the configuration page enter the SSID and password for your regular Wi-Fi network. Also, choose a password that will protect the Configuration page in future.
 
+![System configuration](img/config-system.png)
+
 This is the minimum information that must be entered. You can enter more, but it is probably more convenient to allow Orbitrakr to connect to your Wi-Fi network and then enter the remaining information via a browser on a desktop or laptop computer. Scroll down and TODO. If all goes well Orbitrakr will restart and connect to your network.
 
 Orbitrakr supports the Thingpings service. To find the device on your local network you can visit [www.thingpings.com](https://www.thingpings.com) and click on the Things tab. Click Refresh if you don't immediately see it.
+
+![Orbitrakr on Thingpings](img/config-thingpings.png)
 
 Open a web browser and browse to the address of the device on your local network. From the menu, choose Configuration. When prompted, enter the password you previously configured. The username is always `admin`. Now the remaining settings can be configured.
 
 ## Rotator
 
+![Rotator configuration](img/config-rotator.png)
+
 ## Tracker
 
-## TinyGS
+![Tracker configuration](img/config-tracker.png)
+
+## TinyGS Station
+
+![TinyGS configuration](img/config-tinygs.png)
 
 ## Troubleshooting
 
