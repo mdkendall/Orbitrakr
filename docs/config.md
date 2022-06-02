@@ -22,9 +22,15 @@ Open a web browser and browse to the address of the device on your local network
 
 ![Tracker configuration](img/config-tracker.png)
 
+If you want to track a specific satellite, enter its NORAD catalog number (typically five decimal digits).
+
+Enter the latitude (-90 to +90) and longitude (-180 to +180) of the Orbitrakr location. This information is needed to calculate the "look angle" of a satellite at a given position in orbit from your location on the ground. Three decimal places of precision is sufficient.
+
 ## TinyGS Station
 
 ![TinyGS configuration](img/config-tinygs.png)
+
+Orbitrakr can follow a TinyGS station that is using the Auto Tune feature to configure its receiver for different satellites as they come in to view. If you want Orbitrakr to automatically track the satellite that such a station is listening to, enter your TinyGS MQTT username and password, and the name of the station. The MQTT username and password are the ones that you get from the TinyGS Personal Bot on Telegram when you set up your station. The station name must be the same as it is entered in the TinyGS station configuration, the same as it appears on the TinyGS web site.
 
 ## Troubleshooting
 
