@@ -18,6 +18,19 @@ Open a web browser and browse to the address of the device on your local network
 
 ![Rotator configuration](img/config-rotator.png)
 
+Choose the type of motor driver for each axis. The options are:
+- A driver that requires Step and Direction signals, e.g. A4988-based board or TB6600 module.
+- A driver that directly drives the coils of a stepper motor using two wires.
+- A driver that directly drives the coils of a stepper motor using four wires, e.g. ULN2003-based board driving 28BYJ-48 motor.
+
+Enter a comma-separated list of the pin numbers that are connected to the driver, in the order shown. The numbers should be the "Arduino digital pin" numbers (which are typically labelled on development boards and modules), not the actual pin numbers or port/bit numbers of the ESP32 chip itself.
+
+Enter the number of steps per revolution. This is the number of full motor steps for a complete revolution of the axis. It includes the motor itself, any gearbox that is part of the motor, and any gearing between the output of the motor and the axis. For example, the 28BYJ-48 motor has 32 steps per revolution and an integrated gearbox with a ratio of 25792:405 (about 63.684). So if this motor drives the axis directly enter 2037.88.
+
+Enter the maximum motor speed in steps per second. For example, with no load the 28BYJ-48 motor can be driven at about 300-400 steps per second before it skips steps, so 200 steps per second is a reasonably conservative maximum.
+
+Enter the maximum motor acceleration in steps per second per second. Allow for the fact that the motor is loaded by the inertia of the axis and the antenna. A good starting point is half the maximum speed (i.e. two seconds to accelerate from rest to top speed). Lower values will produce smoother movement with less likelihood of skipping steps.
+
 ## Tracker
 
 ![Tracker configuration](img/config-tracker.png)
