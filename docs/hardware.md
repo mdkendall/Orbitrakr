@@ -16,6 +16,8 @@ The board can be provided with power via the USB connector or the `VIN` pin. The
 
 The firmware is developed and tested using 28BYJ-48 stepper motors and ULN2003-based driver boards, using the "4-wire" configuration. This is probably the cheapest, smallest and most straightforward configuration, and can be powered from 5V DC. Both the motors and driver boards are available as generic items very inexpensively, often bundled together. However, these motors are low-speed and low-torque, and are only suitable for rotating small antennas.
 
+![28BYJ-48 Motor and ULN2003-Based Driver Board](img/hardware-28bjy48-uln2003.jpg)
+
 In this configuration the coils of the motor are directly controlled by the ESP32, and the driver is nothing more than a set of power transistors capable of handling the required current.
 
 ### Medium
