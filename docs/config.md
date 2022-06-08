@@ -1,18 +1,22 @@
 # Configuration
 
-On initial startup Orbitrakr creates a Wi-Fi access point with SSID `Orbitrakr` and password `password`. Connect to this, for example from a smartphone. Open a web browser and navigate to `192.168.4.1` - your phone may do this automatically for you when you connect since Orbitrakr presents a "captive portal". When prompted, enter username `admin` and password `password`. You should see the Configuration page.
+On initial startup Orbitrakr creates a Wi-Fi access point with SSID `Orbitrakr` and password `password`. Connect to this, for example from a smartphone. Open a web browser and navigate to `192.168.4.1` - your phone may do this automatically for you when you connect since Orbitrakr presents a "captive portal". You should see the main menu. Click the Configure button.
 
-On the configuration page enter the SSID and password for your regular Wi-Fi network. Also, choose a password that will protect the Configuration page in future.
+![Main menu](img/config-menu.png)
+
+On the configuration page choose a new password for the built-in Wi-Fi access point and a new name for it if you want, then enter the SSID and password for your regular Wi-Fi network.
 
 ![System configuration](img/config-system.png)
 
-This is the minimum information that must be entered. You can enter more, but it is probably more convenient to allow Orbitrakr to connect to your Wi-Fi network and then enter the remaining information via a browser on a desktop or laptop computer. Scroll down and TODO. If all goes well Orbitrakr will restart and connect to your network.
+This is the minimum information that must be entered. You can enter more, but it is probably more convenient to allow Orbitrakr to connect to your Wi-Fi network and then enter the remaining information via a browser on a desktop or laptop computer. Scroll down and click Apply. You will see a confirmation message asking you to disconnect from the access point. When you do so, Orbitrakr will restart and connect to your network.
+
+![Config saved](img/config-saved.png)
 
 Orbitrakr supports the Thingpings service. To find the device on your local network you can visit [www.thingpings.com](https://www.thingpings.com) and click on the Things tab. Click Refresh if you don't immediately see it.
 
 ![Orbitrakr on Thingpings](img/config-thingpings.png)
 
-Open a web browser and browse to the address of the device on your local network. From the menu, choose Configuration. When prompted, enter the password you previously configured. The username is always `admin`. Now the remaining settings can be configured.
+Open a web browser and browse to the address of the device on your local network. From the menu, choose Configure. When prompted, enter a username of 'admin', and the same password that you just configured for the local access point. Now the remaining settings can be configured.
 
 ## Rotator
 
@@ -51,4 +55,4 @@ When it starts up Orbitrakr offers its own Wi-Fi access point for about 30 secon
 
 For the Thingpings service to work, Orbitrakr must be able to access the internet. It needs internet connectivity for other functionality too (such obtaining the time via NTP, and obtaining TLEs from CelesTrak) so ensure that routers and/or firewalls are not configured to block it. Orbitrakr only needs outbound access - you do not need to forward any ports to it.
 
-For the Configuration page, the username is always `admin` and the password is whatever you set it to.
+For the Configuration page authentication, the username is always `admin` and the password is the same as that set for the local access point.
