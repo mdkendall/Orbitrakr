@@ -1,4 +1,7 @@
-# ![Orbitrakr](img/logo-320px-opt.png)
+---
+title: Home
+nav_order: 1
+---
 
 Orbitrakr is an antenna rotator controller, intended for pointing an antenna at satellites in low earth orbit. The controller consists of an ESP32 microcontroller board running the Orbitrakr firmware, and two motor drivers. The motors drive the azimuth and elevation axes of the rotator, to which the antenna is mounted.
 

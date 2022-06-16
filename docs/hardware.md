@@ -1,3 +1,8 @@
+---
+title: Hardware
+nav_order: 2
+---
+
 # Hardware
 
 The Orbitrakr project does not require specific hardware. Many controller boards are suitable for running the firmware, and the design and construction of a mechnical rotator depends on the antenna you wish to rotate.

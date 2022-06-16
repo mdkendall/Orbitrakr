@@ -1,3 +1,8 @@
+---
+title: Configuration
+nav_order: 3
+---
+
 # Configuration
 
 On initial startup Orbitrakr creates a Wi-Fi access point with SSID `Orbitrakr` and password `password`. Connect to this, for example from a smartphone. Open a web browser and navigate to `192.168.4.1` - your phone may do this automatically for you when you connect since Orbitrakr presents a "captive portal". You should see the main menu. Click the Configure button.

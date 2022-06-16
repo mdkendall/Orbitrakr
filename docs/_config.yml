@@ -1,0 +1,5 @@
+remote_theme: just-the-docs/just-the-docs
+logo: "/img/logo-320px-opt.png"
+aux_links:
+  "Orbitrakr on GitHub":
+    - "//github.com/mdkendall/Orbitrakr"
