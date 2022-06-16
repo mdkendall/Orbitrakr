@@ -3,9 +3,15 @@ title: Home
 nav_order: 1
 ---
 
-Orbitrakr is an antenna rotator controller, intended for pointing an antenna at satellites in low earth orbit. The controller consists of an ESP32 microcontroller board running the Orbitrakr firmware, and two motor drivers. The motors drive the azimuth and elevation axes of the rotator, to which the antenna is mounted.
+# Point antennas at satellites.
+{: .fs-9 }
+
+Orbitrakr is an antenna rotator controller, intended for pointing an antenna at satellites in low earth orbit. The controller consists of an ESP32 microcontroller board running the Orbitrakr firmware, and two motor drivers. The motors drive the azimuth and elevation axes of the rotator, which point the antenna.
+{: .fs-6 .fw-300 }
 
 This is the user documentation. If you are interested in understanding the source code or contributing to the project, please see the documentation in the [Orbitrakr source code repository](https://github.com/mdkendall/Orbitrakr) on GitHub.
+
+---
 
 ## Overview
 
@@ -18,5 +24,3 @@ This is the user documentation. If you are interested in understanding the sourc
 - Rotctld compatible network interface.
 - Built-in tracker can follow any satellite by NORAD catalog number.
 - [TinyGS](https://tinygs.com/) follower can track whichever satellite your TinyGS station is listening to.
-
-
