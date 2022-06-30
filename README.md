@@ -25,12 +25,6 @@ The source of this diagram is a [diagrams.net](https://www.diagrams.net/) drawin
 
 Inspiration and some source code from [TinyGS](https://github.com/G4lile0/tinyGS).
 
-### Rotctld Interface
-
-Orbitrakr presents an interface on port 4533 compatible with the [Hamlib](https://github.com/Hamlib/Hamlib) rotctld protocol. This means Orbitrakr is compatible with any software that will talk to rotctld, for example [Gpredict](http://gpredict.oz9aec.net/) and the [SatNOGS](https://wiki.satnogs.org/) client.
-
-Programs like this, run on a separate computer, can be used to manually control the rotator, or to track satellites and command the rotator to point the antenna as they pass overhead.
-
 ## References
 
 Vallado, David A., Paul Crawford, Richard Hujsak, and T.S. Kelso, "Revisiting Spacetrack Report #3" presented at the AIAA/AAS Astrodynamics Specialist Conference, Keystone, CO, 2006 August 21–24.
