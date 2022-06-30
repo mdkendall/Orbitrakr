@@ -16,7 +16,14 @@ Architecture image coming soon.
 
 The source of this diagram is a [diagrams.net](https://www.diagrams.net/) drawing in the assets folder.
 
-## Libraries
+## Libraries Used
+
+- [IotWebConf](https://github.com/prampec/IotWebConf) Wi-Fi web configuration portal
+- [AccelStepper](https://github.com/waspinator/AccelStepper) Stepper motor driver
+- [ArduinoJson](https://github.com/bblanchon/ArduinoJson) JSON library
+- [PubSubClient](https://github.com/knolleary/PubSubClient) MQTT client
+
+Inspiration and some source code from [TinyGS](https://github.com/G4lile0/tinyGS).
 
 ### Rotctld Interface
 
@@ -35,5 +42,3 @@ David Vallado, "Fundamentals of Astrodynamics and Applications, Fourth Edition",
 
 - https://celestrak.com/software/vallado-sw.php
 - https://celestrak.com/software/vallado/cpp.zip
-
-
