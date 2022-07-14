@@ -19,7 +19,7 @@
 
 #include <Arduino.h>
 #include <DNSServer.h>
-#include <Webserver.h>
+#include <WebServer.h>
 #include <time.h>
 
 #include "webui.h"
