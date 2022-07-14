@@ -34,6 +34,11 @@ jobs:
         pip install --upgrade platformio
     - name: Run PlatformIO
       run: pio run -e esp32dev
+    - name: Copy other Binaries
+      run: |
+        cp ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin .pio/build/esp32dev/
+        cp ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin .pio/build/esp32dev/
+
     - name: Archive build artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -41,5 +46,5 @@ jobs:
         path: |
           .pio/build/esp32dev/firmware.bin
           .pio/build/esp32dev/partitions.bin
-          ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin
-          ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
+          .pio/build/esp32dev/bootloader_dio_40m.bin
+          .pio/build/esp32dev/boot_app0.bin
