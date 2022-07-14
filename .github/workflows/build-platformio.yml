@@ -1,4 +1,4 @@
-name: Build Firmware with PlatformIO
+name: Build Firmware
 
 on:
   push:
@@ -41,4 +41,5 @@ jobs:
         path: |
           .pio/build/esp32dev/firmware.bin
           .pio/build/esp32dev/partitions.bin
-      
+          ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin
+          ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
