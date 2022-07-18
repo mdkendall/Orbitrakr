@@ -34,17 +34,21 @@ jobs:
         pip install --upgrade platformio
     - name: Run PlatformIO
       run: pio run -e esp32dev
-    - name: Copy other Binaries
+    - name: Create merged binary
+      run: >
+        python esptool --chip esp32 merge_bin -o .pio/build/esp32dev/firmware-full.bin
+        0x1000 ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin
+        0x8000 .pio/build/esp32dev/partitions.bin
+        0xe000 ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
+        0x10000 .pio/build/esp32dev/firmware.bin
+    - name: Rename binaries
       run: |
-        cp ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin .pio/build/esp32dev/
-        cp ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin .pio/build/esp32dev/
-
+        mv .pio/build/esp32dev/firmware.bin .pio/build/esp32dev/orbitrakr-ota.bin
+        mv .pio/build/esp32dev/firmware-full.bin .pio/build/esp32dev/orbitrakr-full.bin
     - name: Archive build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: firmware
         path: |
-          .pio/build/esp32dev/firmware.bin
-          .pio/build/esp32dev/partitions.bin
-          .pio/build/esp32dev/bootloader_dio_40m.bin
-          .pio/build/esp32dev/boot_app0.bin
+          .pio/build/esp32dev/orbitrakr-ota.bin
+          .pio/build/esp32dev/orbitrakr-full.bin
