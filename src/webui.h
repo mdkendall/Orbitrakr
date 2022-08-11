@@ -63,9 +63,10 @@ class WebUI {
     WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb);
     void doLoop(void);
 
-    /* --- Run-time properties presented on the Dashbard --- */
+    /* --- Run-time properties presented on the Dashboard --- */
 
     WebUIItemGroup &addItemGroup(const char *id, const char *label);
+    WebUIItem *findItem(const char *groupId, const char *itemId);
 
     /* --- Static configuration presented on the Configure page --- */
 

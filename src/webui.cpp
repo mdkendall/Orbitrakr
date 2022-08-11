@@ -190,6 +190,20 @@ WebUIItemGroup& WebUI::addItemGroup(const char *id, const char *label) {
     return this->itemGroups.back();
 }
 
+WebUIItem* WebUI::findItem(const char *groupId, const char *itemId) {
+
+    for (auto &itemGroup : itemGroups) {
+        if (groupId == itemGroup.id) {
+            for (auto &item : itemGroup.items) {
+                if (itemId == item.id) {
+                    return &item;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
 WebUIItemGroup::WebUIItemGroup(const char *id, const char *label) :
     id(id), label(label) {
 };
