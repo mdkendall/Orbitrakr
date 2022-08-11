@@ -23,6 +23,7 @@
 #include <time.h>
 
 #include "webui.h"
+#include "display.h"
 #include "rotator.h"
 #include "rotctld.h"
 #include "tracker.h"
@@ -32,6 +33,7 @@
 DNSServer *dnsServer;   // DNS server for the config WiFi access point
 WebServer *webServer;   // webserver for the config web interface
 WebUI *webUI;           // config web interface
+Display *display;       // OLED display
 Rotator *rotator;       // rotator motor controller
 Rotctld *rotctld;       // rotcrld-compatible network interface
 Tracker *tracker;       // satellite tracker
@@ -54,6 +56,7 @@ void setup(void) {
     dnsServer = new DNSServer;
     webServer = new WebServer(80);
     webUI = new WebUI(*dnsServer, *webServer, onWifiConnected);
+    display = new Display(*webUI);
     rotator = new Rotator(*webUI);
     rotctld = new Rotctld(4533, *rotator);
     tracker = new Tracker(*webUI, *rotator);
