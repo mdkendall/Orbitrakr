@@ -91,6 +91,9 @@ class WebUI {
     char *getTinygsPassword() { return tinygsPassword; };
     char *getTinygsStation() { return tinygsStation; };
 
+    /* display */
+    uint8_t *getDisplayPins(uint8_t *pins) { return parsePins(displayPins, pins); };
+
     /* general */
     char *getThingName() { return m_iotWebConf.getThingName(); }
 
@@ -117,6 +120,7 @@ class WebUI {
     char tinygsUsername[STRING_LEN] = "";
     char tinygsPassword[STRING_LEN] = "";
     char tinygsStation[STRING_LEN] = "";
+    char displayPins[STRING_LEN] = "";
 
     const char motorTypeValues[3][STRING_LEN] = { "1", "2", "8" };
     const char motorTypeNames[3][STRING_LEN] = { "Driver (Step, Dir)", "2-Wire (CoilA, CoilB)", "4-Wire (CoilA+, CoilA-, CoilB+, CoilB-)" };
@@ -140,6 +144,9 @@ class WebUI {
     iotwebconf::TextParameter paramTinygsUsername = iotwebconf::TextParameter("MQTT Username", "tinygsUsername", tinygsUsername, STRING_LEN);
     iotwebconf::TextParameter paramTinygsPassword = iotwebconf::TextParameter("MQTT Password", "tinygsPassword", tinygsPassword, STRING_LEN);
     iotwebconf::TextParameter paramTinygsStation = iotwebconf::TextParameter("Station Name", "tinygsStation", tinygsStation, STRING_LEN);
+    iotwebconf::ParameterGroup groupDisplay = iotwebconf::ParameterGroup("Display", "Display");
+    iotwebconf::TextParameter paramDisplayPins = iotwebconf::TextParameter("Display GPIO pins (comma separated list)", "displayPins", displayPins, STRING_LEN);
+
     void handleRoot(void);
     void handleDashboard(void);
     void handleApiGet(void);

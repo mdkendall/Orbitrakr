@@ -72,6 +72,8 @@ WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> w
     groupTinygs.addItem(&paramTinygsPassword);
     groupTinygs.addItem(&paramTinygsStation);
     m_iotWebConf.addParameterGroup(&groupTinygs);
+    groupDisplay.addItem(&paramDisplayPins);
+    m_iotWebConf.addParameterGroup(&groupDisplay);
 
     m_iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
     m_iotWebConf.setWifiConnectionCallback(wifiConnectionCb);

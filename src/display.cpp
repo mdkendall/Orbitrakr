@@ -22,7 +22,9 @@
 Display::Display(WebUI &webUI) :
     webUI(webUI) {
 
-    u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0);
+    uint8_t pins[4] = {0};
+    webUI.getDisplayPins(pins);
+    u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, U8X8_PIN_NONE, pins[0], pins[1]);
     xTaskCreatePinnedToCore(task, "Display", 4096, this, 2, &taskHandle, 1);
 }
 
