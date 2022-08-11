@@ -37,10 +37,15 @@ class Display {
 
    private:
     static void task(void *param);
+    void showSplash(void);
+    void showDashboard(void);
+    void pxFromAzEl(float az, float el, uint8_t &x, uint8_t &y);
+
+    WebUIItem *itemRotAz, *itemRotEl, *itemTrkAz, *itemTrkEl;
 
     WebUI& webUI;
     TaskHandle_t taskHandle;
-    U8G2_SSD1306_128X64_NONAME_F_HW_I2C *u8g2;
+    U8G2_SSD1306_128X64_NONAME_F_HW_I2C *dsp;
 };
 
 #endif
