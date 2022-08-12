@@ -72,15 +72,21 @@ void Display::showDashboard(void) {
     char s[32];
 
     dsp->clearBuffer();
+
+    /* draw the polar plot */
     dsp->drawCircle(POLAR_CENTER_X, POLAR_CENTER_Y, POLAR_RADIUS, U8G2_DRAW_ALL);
     dsp->drawCircle(POLAR_CENTER_X, POLAR_CENTER_Y, POLAR_RADIUS*2/3, U8G2_DRAW_ALL);
     dsp->drawCircle(POLAR_CENTER_X, POLAR_CENTER_Y, POLAR_RADIUS*1/3, U8G2_DRAW_ALL);
 
+    /* mark the position of the rotator */
     pxFromAzEl(itemRotAz->getValue(), itemRotEl->getValue(), x, y);
     dsp->drawCircle(x, y, 5);
 
-    pxFromAzEl(itemTrkAz->getValue(), itemTrkEl->getValue(), x, y);
-    dsp->drawDisc(x, y, 3);
+    /* mark the position of the tracked satellite, if above the horizon */
+    if (itemTrkEl->getValue() > 0.) {
+        pxFromAzEl(itemTrkAz->getValue(), itemTrkEl->getValue(), x, y);
+        dsp->drawDisc(x, y, 3);
+    }
 
     dsp->setFont(u8g2_font_helvR08_tr);
     snprintf(s, sizeof(s), "Rot: %5.1f %4.1f", itemRotAz->getValue(), itemRotEl->getValue());
