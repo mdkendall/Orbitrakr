@@ -36,14 +36,16 @@ bool Predictor::init(uint32_t catNum) {
     double sec;
     struct tm t = {0};
     bool done = false;
+    int retCode;
 
     catalogNumber = catNum;
 
     // Fetch the latest TLE from Celestrak
-    url = String("http://celestrak.com/NORAD/elements/gp.php?CATNR=") + String(catalogNumber);
+    url = String("http://celestrak.org/NORAD/elements/gp.php?CATNR=") + String(catalogNumber);
     Serial.println(url);
     http.begin(url);
-    if (http.GET() == HTTP_CODE_OK) {
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    if ((retCode = http.GET()) == HTTP_CODE_OK) {
         WiFiClient response = http.getStream();
         satName = response.readStringUntil('\n');
         tle[0] = response.readStringUntil('\n');
@@ -68,7 +70,7 @@ bool Predictor::init(uint32_t catNum) {
         Serial.println(String("  TLE[1]: ") + tle[1]);
         Serial.println(String("  Epoch: ") + String(epoch));
     } else {
-        Serial.println("Predictor init failed");
+        Serial.printf("Predictor init failed with HTTP %d\n", retCode);
     }
     http.end();
     return done;
