@@ -51,24 +51,28 @@ bool Predictor::init(uint32_t catNum) {
         tle[0] = response.readStringUntil('\n');
         tle[1] = response.readStringUntil('\n');
 
-        // Convert the string format TLE to SGP4 elements and initialise the satellite record.
-        // twoline2rv needs non-const char arrays (it may modify them), so we make temporary copies.
-        strncpy(tleTemp[0], tle[0].c_str(), 80);
-        strncpy(tleTemp[1], tle[1].c_str(), 80);
-        SGP4Funcs::twoline2rv(tleTemp[0], tleTemp[1], 'a', wgs72, satrec);
+        // Check that the response looks plausible
+        if (satName.length() && !satName.startsWith("No GP data") && tle[0].length() && tle[1].length()) {
 
-        // Convert the TLE epoch to a standard UNIX timestamp
-        SGP4Funcs::invjday_SGP4(satrec.jdsatepoch, satrec.jdsatepochF, year, mon, day, hr, minute, sec);
-        t.tm_year = year - 1900; t.tm_mon = mon - 1; t.tm_mday = day; t.tm_hour = hr; t.tm_min = minute; t.tm_sec = sec;
-        epoch = mktime(&t);
-        done = true;
+            // Convert the string format TLE to SGP4 elements and initialise the satellite record.
+            // twoline2rv needs non-const char arrays (it may modify them), so we make temporary copies.
+            strncpy(tleTemp[0], tle[0].c_str(), 80);
+            strncpy(tleTemp[1], tle[1].c_str(), 80);
+            SGP4Funcs::twoline2rv(tleTemp[0], tleTemp[1], 'a', wgs72, satrec);
 
-        // Debug
-        Serial.println(String("Predictor init complete:"));
-        Serial.println(String("  Sat Name: ") + satName);
-        Serial.println(String("  TLE[0]: ") + tle[0]);
-        Serial.println(String("  TLE[1]: ") + tle[1]);
-        Serial.println(String("  Epoch: ") + String(epoch));
+            // Convert the TLE epoch to a standard UNIX timestamp
+            SGP4Funcs::invjday_SGP4(satrec.jdsatepoch, satrec.jdsatepochF, year, mon, day, hr, minute, sec);
+            t.tm_year = year - 1900; t.tm_mon = mon - 1; t.tm_mday = day; t.tm_hour = hr; t.tm_min = minute; t.tm_sec = sec;
+            epoch = mktime(&t);
+            done = true;
+
+            // Debug
+            Serial.println(String("Predictor init complete:"));
+            Serial.println(String("  Sat Name: ") + satName);
+            Serial.println(String("  TLE[0]: ") + tle[0]);
+            Serial.println(String("  TLE[1]: ") + tle[1]);
+            Serial.println(String("  Epoch: ") + String(epoch));
+        }
     } else {
         Serial.printf("Predictor init failed with HTTP %d\n", retCode);
     }
