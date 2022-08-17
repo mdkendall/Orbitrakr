@@ -41,7 +41,7 @@ class Display {
     void showDashboard(void);
     void pxFromAzEl(float az, float el, uint8_t &x, uint8_t &y);
 
-    WebUIItem *itemRotAz, *itemRotEl, *itemTrkAz, *itemTrkEl;
+    WebUIItem *itemRotAz, *itemRotEl, *itemTrkCatnum, *itemTrkAz, *itemTrkEl;
 
     WebUI& webUI;
     TaskHandle_t taskHandle;

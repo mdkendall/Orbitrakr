@@ -41,6 +41,7 @@ void Display::task(void *param) {
     /* Look up the items we are going to want to display */
     display->itemRotAz = display->webUI.findItem("rotator", "az");
     display->itemRotEl = display->webUI.findItem("rotator", "el");
+    display->itemTrkCatnum = display->webUI.findItem("tracker", "catalognumber");
     display->itemTrkAz = display->webUI.findItem("tracker", "az");
     display->itemTrkEl = display->webUI.findItem("tracker", "el");
 
@@ -55,7 +56,7 @@ void Display::task(void *param) {
 void Display::showSplash(void) {
 
     dsp->clearBuffer();
-    dsp->setFont(u8g2_font_helvR12_tr);
+    dsp->setFont(u8g2_font_unifont_tr);
     dsp->drawStr(0, 20, "Orbitrakr");
     dsp->sendBuffer();
 }
@@ -88,11 +89,16 @@ void Display::showDashboard(void) {
         dsp->drawDisc(x, y, 3);
     }
 
-    dsp->setFont(u8g2_font_helvR08_tr);
-    snprintf(s, sizeof(s), "Rot: %5.1f %4.1f", itemRotAz->getValue(), itemRotEl->getValue());
-    dsp->drawStr(0, 12, s);
-    snprintf(s, sizeof(s), "Trk: %5.1f %4.1f", itemTrkAz->getValue(), itemTrkEl->getValue());
+    /* draw the text */
+    dsp->setFont(u8g2_font_unifont_tr);
+    dsp->drawStr(0, 12, "Rotator");
+    snprintf(s, sizeof(s), "%.0f %.0f", itemRotAz->getValue(), itemRotEl->getValue());
     dsp->drawStr(0, 24, s);
+    dsp->drawStr(0, 36, "Tracker");
+    snprintf(s, sizeof(s), "%05.0f", itemTrkCatnum->getValue());
+    dsp->drawStr(0, 48, s);
+    snprintf(s, sizeof(s), "%.0f %.0f", itemTrkAz->getValue(), itemTrkEl->getValue());
+    dsp->drawStr(0, 60, s);
 
     dsp->sendBuffer();
 }
