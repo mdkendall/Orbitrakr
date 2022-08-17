@@ -20,6 +20,7 @@ This is the developer documentation for those interested in understanding the so
 - [AccelStepper](https://github.com/waspinator/AccelStepper) Stepper motor driver
 - [ArduinoJson](https://github.com/bblanchon/ArduinoJson) JSON library
 - [PubSubClient](https://github.com/knolleary/PubSubClient) MQTT client
+- [U8g2](https://github.com/olikraus/u8g2) Monochrome graphics for OLEDs and LCDs
 
 Inspiration and some source code from [TinyGS](https://github.com/G4lile0/tinyGS).
 
