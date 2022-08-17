@@ -44,16 +44,26 @@ Tracker::Tracker(WebUI &webUI, Rotator &rotator) :
  *  Intended to be called after a change in configuration or network connectivity.
  */
 void Tracker::restart(void) {
-    setSat(webUI.getCatalogNumber());
     predictor.site(webUI.getSiteLat() * DEG_TO_RAD, webUI.getSiteLon() * DEG_TO_RAD);
-    state = TRACKER_STATE_STARTED;
+    setSat(webUI.getCatalogNumber());
 }
 
 /** @brief  Set the tracked satellite by NORAD catalog number.
  */
 void Tracker::setSat(uint32_t catalogNumber) {
-    itemCatalogNumber->setValue(catalogNumber);
-    predictor.init(catalogNumber);
+    if (predictor.init(catalogNumber)) {
+        itemCatalogNumber->setValue(catalogNumber);
+        state = TRACKER_STATE_STARTED;
+    } else {
+        state = TRACKER_STATE_STOPPED;
+        itemCatalogNumber->setValue(catalogNumber);
+        itemLatgd->setValue(0);
+        itemLon->setValue(0);
+        itemHellp->setValue(0);
+        itemAz->setValue(0);
+        itemEl->setValue(0);
+        itemRho->setValue(0);
+    }
 }
 
 /** @brief  Main task of the Tracker.
@@ -66,9 +76,13 @@ void Tracker::task(void *param) {
     while (true) {
 
         switch(tracker->state) {
+
             case TRACKER_STATE_STOPPED:
+                /* we do not have a valid predictor; do nothing */
                 break;
+
             case TRACKER_STATE_STARTED:
+                /* propagate the predictor and update the rotator if applicable */
                 double latgc, latgd, lon, hellp;
                 double rho, az, el;
                 tracker->predictor.propagate(time(nullptr));
@@ -84,10 +98,14 @@ void Tracker::task(void *param) {
                 tracker->itemAz->setValue(az*RAD_TO_DEG);
                 tracker->itemEl->setValue(el*RAD_TO_DEG);
                 tracker->itemRho->setValue(rho);
-
-                if (tracker->itemCatalogNumber->req) tracker->setSat(tracker->itemCatalogNumber->getReqValue());
                 break;
         }
+
+        /* check for a request to change the tracked satellite */
+        if (tracker->itemCatalogNumber->req) {
+            tracker->setSat(tracker->itemCatalogNumber->getReqValue());
+        }
+
         vTaskDelay(1000);
     }
 }
