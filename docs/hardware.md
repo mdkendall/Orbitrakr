@@ -15,6 +15,12 @@ The firmware is developed and tested using a ESP32 DevKit v1 board. However, the
 
 The board can be provided with power via the USB connector or the `VIN` pin. The USB connector is more convenient for initial programming and testing, whereas making a soldered connection to `VIN` is more robust for long-term operation. In either case, do not attempt to power the motors and/or drivers from any of the power outputs on the ESP32 module; they cannot supply sufficient current.
 
+## Display
+
+Although the primary user interface is through web pages, an OLED display may optionally be connected. The firmware supports a 128x64 pixel display with a SSD1306 compatible driver and `I2C` interface.
+
+![OLED Display](img/hardware-display.jpg)
+
 ## Motors and Drivers
 
 ### Small

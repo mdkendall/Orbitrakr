@@ -54,6 +54,12 @@ Enter the latitude (-90 to +90) and longitude (-180 to +180) of the Orbitrakr lo
 
 Orbitrakr can follow a TinyGS station that is using the Auto Tune feature to configure its receiver for different satellites as they come in to view. If you want Orbitrakr to automatically track the satellite that such a station is listening to, enter your TinyGS MQTT username and password, and the name of the station. The MQTT username and password are the ones that you get from the TinyGS Personal Bot on Telegram when you set up your station. The station name must be the same as it is entered in the TinyGS station configuration, the same as it appears on the TinyGS web site.
 
+## Display
+
+![Display configuration](img/config-display.png)
+
+If you have a display connected, enter a comma-separated list of the pin numbers that are connected to it. Enter the SCL pin first, then SDA.
+
 ## Troubleshooting
 
 When it starts up Orbitrakr offers its own Wi-Fi access point for about 30 seconds to allow you to connect directly if desired. If you don't, it will then attempt to connect to the Wi-Fi network that has been configured. If it cannot connect (for example because the password is wrong, or it is out of range) it will go back to offering its own access point. So, if it does not appear on your network try reconnecting to it via the `Orbitrakr` access point.
