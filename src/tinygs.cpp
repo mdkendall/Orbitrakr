@@ -24,6 +24,8 @@
 #include "webui.h"
 #include "ArduinoJson.h"
 
+#include <byteswap.h>
+
 #define MQTT_RETRY_INTERVAL     10
 
 Tinygs::Tinygs(WebUI &webUI, Tracker &tracker) :
@@ -59,6 +61,10 @@ void Tinygs::task(void *param) {
     time_t now;
     time_t connectRetryTime = (time_t)0;
 
+    char sDeviceID[26];
+    uint64_t deviceID = __bswap_64(ESP.getEfuseMac()) >> 16;
+    snprintf(sDeviceID, sizeof(sDeviceID), "Orbitrakr-%012llx", deviceID);
+
     while (true) {
 
         switch (tinygs->state) {
@@ -75,8 +81,8 @@ void Tinygs::task(void *param) {
                     Serial.println("TinyGS connecting...");
                     tinygs->pubsubclient->setServer("mqtt.tinygs.com", 8883);
                     tinygs->pubsubclient->setCallback([tinygs] (char* topic, uint8_t* payload, unsigned int len) {tinygs->handleMessage(topic, payload, len);});
-                    if (tinygs->pubsubclient->connect("Orbitrackr", tinygs->webUI.getTinygsUsername(), tinygs->webUI.getTinygsPassword())) {
-                        Serial.println("TinyGS connected");
+                    if (tinygs->pubsubclient->connect(sDeviceID, tinygs->webUI.getTinygsUsername(), tinygs->webUI.getTinygsPassword())) {
+                        Serial.printf("TinyGS connected as %s\n", sDeviceID);
                         char topic[128];
                         snprintf(topic, sizeof(topic), "tinygs/%s/%s/cmnd/begine", tinygs->webUI.getTinygsUsername(), tinygs->webUI.getTinygsStation());
                         tinygs->pubsubclient->subscribe(topic);
