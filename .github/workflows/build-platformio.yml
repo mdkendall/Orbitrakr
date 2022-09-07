@@ -36,7 +36,7 @@ jobs:
       run: pio run -e esp32dev
     - name: Create merged binary
       run: >
-        python ~/.platformio/packages/tool-esptoolpy/esptool.py --chip esp32 merge_bin -o .pio/build/esp32dev/firmware-full.bin
+        python ~/.platformio/packages/tool-esptoolpy/esptool.py --chip esp32 merge_bin -o .pio/build/esp32dev/firmware-full.bin --flash_mode dio
         0x1000 ~/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/bin/bootloader_dio_40m.bin
         0x8000 .pio/build/esp32dev/partitions.bin
         0xe000 ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
