@@ -24,8 +24,6 @@
 #include "webui.h"
 #include "ArduinoJson.h"
 
-#include <byteswap.h>
-
 #define MQTT_RETRY_INTERVAL     10
 
 Tinygs::Tinygs(WebUI &webUI, Tracker &tracker) :
@@ -62,8 +60,8 @@ void Tinygs::task(void *param) {
     time_t connectRetryTime = (time_t)0;
 
     char sDeviceID[26];
-    uint64_t deviceID = __bswap_64(ESP.getEfuseMac()) >> 16;
-    snprintf(sDeviceID, sizeof(sDeviceID), "Orbitrakr-%012llx", deviceID);
+    uint64_t chipid = ESP.getEfuseMac();
+    snprintf(sDeviceID, sizeof(sDeviceID), "Orbitrakr-%04X%08X", (uint16_t)(chipid>>32), (uint32_t)chipid);
 
     while (true) {
 
