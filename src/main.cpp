@@ -20,6 +20,7 @@
 #include <Arduino.h>
 #include <DNSServer.h>
 #include <WebServer.h>
+#include <Thingpings.h>
 #include <time.h>
 
 #include "webui.h"
@@ -28,7 +29,6 @@
 #include "rotctld.h"
 #include "tracker.h"
 #include "tinygs.h"
-#include "thingpings.h"
 
 DNSServer *dnsServer;   // DNS server for the config WiFi access point
 WebServer *webServer;   // webserver for the config web interface
