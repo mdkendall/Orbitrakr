@@ -75,6 +75,8 @@ class WebUI {
     int getElMotorType() { return atoi(elMotorType); };
     uint8_t *getAzMotorPins(uint8_t *pins) { return parsePins(azMotorPins, pins); };
     uint8_t *getElMotorPins(uint8_t *pins) { return parsePins(elMotorPins, pins); };
+    uint8_t getAzEndstopPin() { return atoi(azEndstopPin); }
+    uint8_t getElEndstopPin() { return atoi(elEndstopPin); }
     float getAzStepsPerRev() { return atof(azStepsPerRev); }
     float getElStepsPerRev() { return atof(elStepsPerRev); }
     float getAzSpeedMax() { return atof(azSpeedMax); }
@@ -107,11 +109,13 @@ class WebUI {
 
     char azMotorType[STRING_LEN] = "";
     char azMotorPins[STRING_LEN] = "";
+    char azEndstopPin[STRING_LEN] = "";
     char azStepsPerRev[NUMBER_LEN] = "";
     char elStepsPerRev[NUMBER_LEN] = "";
     char azSpeedMax[NUMBER_LEN] = "";
     char elMotorType[STRING_LEN] = "";
     char elMotorPins[STRING_LEN] = "";
+    char elEndstopPin[STRING_LEN] = "";
     char elSpeedMax[NUMBER_LEN] = "";
     char azAccelMax[NUMBER_LEN] = "";
     char elAccelMax[NUMBER_LEN] = "";
@@ -131,6 +135,8 @@ class WebUI {
     iotwebconf::SelectParameter paramElMotorType = iotwebconf::SelectParameter("Elevation motor type", "elMotorType", elMotorType, STRING_LEN, (char*)motorTypeValues, (char*)motorTypeNames, 3, STRING_LEN);
     iotwebconf::TextParameter paramAzMotorPins = iotwebconf::TextParameter("Azimuth motor GPIO pins (comma separated list)", "azMotorPins", azMotorPins, STRING_LEN);
     iotwebconf::TextParameter paramElMotorPins = iotwebconf::TextParameter("Elevation motor GPIO pins (comma separated list)", "elMotorPins", elMotorPins, STRING_LEN);
+    iotwebconf::TextParameter paramAzEndstopPin = iotwebconf::TextParameter("Azimuth endstop GPIO pin", "azEndstopPin", azEndstopPin, STRING_LEN);
+    iotwebconf::TextParameter paramElEndstopPin = iotwebconf::TextParameter("Elevation endstop GPIO pin", "elEndstopPin", elEndstopPin, STRING_LEN);
     iotwebconf::NumberParameter paramAzStepsPerRev = iotwebconf::NumberParameter("Azimuth motor resolution in steps per revolution", "azStepsPerRev", azStepsPerRev, NUMBER_LEN, "4075.7728");
     iotwebconf::NumberParameter paramElStepsPerRev = iotwebconf::NumberParameter("Elevation motor resolution in steps per revolution", "elStepsPerRev", elStepsPerRev, NUMBER_LEN, "4075.7728");
     iotwebconf::NumberParameter paramAzSpeedMax = iotwebconf::NumberParameter("Azimuth motor max speed in steps per second", "azSpeedMax", azSpeedMax, NUMBER_LEN, "200");

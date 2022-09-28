@@ -21,8 +21,9 @@
 
 /* --- Rotator Axis --- */
 
-RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t pins[]) :
-    stepper(motorInterfaceType, pins[0], pins[1], pins[2], pins[3]) {
+RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t motorPins[], uint8_t endstopPin) :
+    stepper(motorInterfaceType, motorPins[0], motorPins[1], motorPins[2], motorPins[3]),
+    endstopPin(endstopPin) {
 }
 
 void RotatorAxis::doLoop(void) {
@@ -69,11 +70,11 @@ void Rotator::reconfigure(void) {
     if (azAxis) delete(azAxis);
     if (elAxis) delete(elAxis);
 
-    uint8_t pins[4] = {0};
-    azAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getAzMotorPins(pins));
-    Serial.printf("AzAxis: %d [%d %d %d %d]\n", webUI.getAzMotorType(), pins[0], pins[1], pins[2], pins[3]);
-    elAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getElMotorPins(pins));
-    Serial.printf("ElAxis: %d [%d %d %d %d]\n", webUI.getElMotorType(), pins[0], pins[1], pins[2], pins[3]);
+    uint8_t motorPins[4] = {0};
+    azAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getAzMotorPins(motorPins), webUI.getAzEndstopPin());
+    Serial.printf("AzAxis: %d [%d %d %d %d] [%d]\n", webUI.getAzMotorType(), motorPins[0], motorPins[1], motorPins[2], motorPins[3], webUI.getAzEndstopPin());
+    elAxis = new RotatorAxis((AccelStepper::MotorInterfaceType)webUI.getAzMotorType(), webUI.getElMotorPins(motorPins), webUI.getElEndstopPin());
+    Serial.printf("ElAxis: %d [%d %d %d %d] [%d]\n", webUI.getElMotorType(), motorPins[0], motorPins[1], motorPins[2], motorPins[3], webUI.getElEndstopPin());
 
     azAxis->stepsPerRev = webUI.getAzStepsPerRev(); elAxis->stepsPerRev = webUI.getElStepsPerRev();
     azAxis->speedMax = webUI.getAzSpeedMax(); elAxis->speedMax = webUI.getElSpeedMax();

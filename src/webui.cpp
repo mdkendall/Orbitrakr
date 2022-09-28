@@ -49,17 +49,19 @@ class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider {
 CustomHtmlFormatProvider customHtmlFormatProvider;
 
 WebUI::WebUI(DNSServer &dnsServer, WebServer &webServer, std::function<void()> wifiConnectionCb) :
-    m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword),
+    m_iotWebConf(thingName, &dnsServer, &webServer, wifiInitialApPassword, "alpha"),
     m_webServer(&webServer) {
 
     Serial.println("Web UI initialising.");
     groupRotator.addItem(&paramAzMotorType);
     groupRotator.addItem(&paramAzMotorPins);
+    groupRotator.addItem(&paramAzEndstopPin);
     groupRotator.addItem(&paramAzStepsPerRev);
     groupRotator.addItem(&paramAzSpeedMax);
     groupRotator.addItem(&paramAzAccelMax);
     groupRotator.addItem(&paramElMotorType);
     groupRotator.addItem(&paramElMotorPins);
+    groupRotator.addItem(&paramElEndstopPin);
     groupRotator.addItem(&paramElStepsPerRev);
     groupRotator.addItem(&paramElSpeedMax);
     groupRotator.addItem(&paramElAccelMax);
