@@ -21,32 +21,95 @@
 
 /* --- Rotator Axis --- */
 
+#define HOMING_BACKOFF  2.0     // homing backoff amount in degrees
+
 RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t motorPins[], uint8_t endstopPin) :
     stepper(motorInterfaceType, motorPins[0], motorPins[1], motorPins[2], motorPins[3]),
     endstopPin(endstopPin) {
+    pinMode(endstopPin, INPUT_PULLUP);
+    stepper.enableOutputs();
 }
 
 void RotatorAxis::doLoop(void) {
     stepper.run();
+    if (!homed && homingState != HS_IDLE) doHoming();
+}
+
+void RotatorAxis::doHoming(void) {
+
+    switch (homingState) {
+
+      case HS_INIT:
+        if (getEndstop()) {
+            homingState = HS_BACKOFF;
+        } else {
+            stepper.setMaxSpeed(speedMax);
+            stepper.setAcceleration(accelMax);
+            stepper.move(stepsPerRev * (posMin - posMax) / 360.);
+            homingState = HS_SEEK;
+        }
+        break;
+
+      case HS_SEEK:
+        if (getEndstop()) {
+            stepper.stop();
+            homingState = HS_SEEKSTOP;
+        }
+        break;
+
+      case HS_SEEKSTOP:
+        if (!stepper.isRunning()) {
+            stepper.move(stepsPerRev * HOMING_BACKOFF / 360.);
+            homingState = HS_BACKOFF;
+        }
+        break;
+
+      case HS_BACKOFF:
+        if (!stepper.isRunning()) {
+            stepper.setMaxSpeed(speedMax / 4);
+            stepper.setAcceleration(accelMax);
+            stepper.move(stepsPerRev * (-1.5 * HOMING_BACKOFF) / 360.);
+            homingState = HS_CREEP;
+        }
+        break;
+
+      case HS_CREEP:
+        if (getEndstop()) {
+            stepper.stop();
+            homingState = HS_CREEPSTOP;
+        }
+        break;
+
+      case HS_CREEPSTOP:
+        if (!stepper.isRunning()) {
+            stepper.setCurrentPosition(stepsPerRev * posMin / 360.);
+            homingState = HS_IDLE;
+            homed = true;
+        }
+    }
 }
 
 void RotatorAxis::setTarget(float pos) {
     if (homed) {
         pos = max(min(pos, posMax), posMin);
-        stepper.enableOutputs();
         stepper.setMaxSpeed(speedMax);
         stepper.setAcceleration(accelMax);
         stepper.moveTo(stepsPerRev * pos / 360.);
     }
-};
+}
 
 float RotatorAxis::getPosition(void) {
     return (stepper.currentPosition() / stepsPerRev) * 360.;
 }
 
+bool RotatorAxis::getEndstop(void) {
+    return digitalRead(endstopPin);
+}
+
 void RotatorAxis::home(void) {
-    homed = true;                 // FIXME
-};
+    homed = false;
+    homingState = HS_INIT;
+}
 
 void RotatorAxis::stop(void) {
     stepper.stop();

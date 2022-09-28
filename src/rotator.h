@@ -25,12 +25,13 @@
 #include "webui.h"
 
 class RotatorAxis {
-   public:
+  public:
     RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t motorPins[], uint8_t endstopPin);
     void doLoop(void);
 
     void setTarget(float pos);     // set target position in degrees
     float getPosition(void);       // get current position in degrees
+    bool getEndstop(void);         // is the endstop sensor active?
     void home(void);               // move to endstop and set position
     void stop(void);               // immediately stop moving
 
@@ -40,15 +41,17 @@ class RotatorAxis {
     float posMin;           // limit of travel in CCW direction in degrees
     float posMax;           // limit of travel in CC direction in degrees
 
-   private:
+  private:
+    void doHoming(void);
+    enum HomingState { HS_INIT, HS_SEEK, HS_SEEKSTOP, HS_BACKOFF, HS_CREEP, HS_CREEPSTOP, HS_IDLE };
     AccelStepper stepper;
     uint8_t endstopPin;
-    bool homing = false;
     bool homed = false;
+    HomingState homingState = HS_IDLE;
 };
 
 class Rotator {
-   public:
+  public:
     Rotator(WebUI &webUI);
     void reconfigure(void);
 
@@ -56,7 +59,7 @@ class Rotator {
     RotatorAxis *azAxis = nullptr;  // azimuth axis
     RotatorAxis *elAxis = nullptr;  // elevation axis
 
-   private:
+  private:
     static void task(void *param);
 
     TaskHandle_t taskHandle;
