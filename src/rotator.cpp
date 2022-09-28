@@ -22,17 +22,24 @@
 /* --- Rotator Axis --- */
 
 #define HOMING_BACKOFF  2.0     // homing backoff amount in degrees
+#define HOMING_TIMEOUT  30      // homing timeout in seconds
 
 RotatorAxis::RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t motorPins[], uint8_t endstopPin) :
     stepper(motorInterfaceType, motorPins[0], motorPins[1], motorPins[2], motorPins[3]),
     endstopPin(endstopPin) {
     pinMode(endstopPin, INPUT_PULLUP);
     stepper.enableOutputs();
+    homingTimer = xTimerCreate("Homing", pdMS_TO_TICKS(1000ul * HOMING_TIMEOUT), false, this, handleTimeout);
+}
+
+RotatorAxis::~RotatorAxis(void) {
+    xTimerDelete(homingTimer, 0);
 }
 
 void RotatorAxis::doLoop(void) {
     stepper.run();
     if (!homed && homingState != HS_IDLE) doHoming();
+    if (homingState == HS_IDLE && stepper.isRunning() && getEndstop()) stepper.stop();
 }
 
 void RotatorAxis::doHoming(void) {
@@ -83,9 +90,19 @@ void RotatorAxis::doHoming(void) {
       case HS_CREEPSTOP:
         if (!stepper.isRunning()) {
             stepper.setCurrentPosition(stepsPerRev * posMin / 360.);
+            xTimerStop(homingTimer, 0);
             homingState = HS_IDLE;
             homed = true;
         }
+    }
+}
+
+void RotatorAxis::handleTimeout(TimerHandle_t timer) {
+    RotatorAxis *axis = (RotatorAxis*)pvTimerGetTimerID(timer);
+    if (axis != nullptr) {
+        axis->stepper.stop();
+        axis->homingState = HS_IDLE;
+        axis->homed = false;
     }
 }
 
@@ -107,6 +124,7 @@ bool RotatorAxis::getEndstop(void) {
 }
 
 void RotatorAxis::home(void) {
+    xTimerStart(homingTimer, 0);
     homed = false;
     homingState = HS_INIT;
 }

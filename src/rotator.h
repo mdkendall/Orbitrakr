@@ -27,6 +27,7 @@
 class RotatorAxis {
   public:
     RotatorAxis(AccelStepper::MotorInterfaceType motorInterfaceType, uint8_t motorPins[], uint8_t endstopPin);
+    ~RotatorAxis(void);
     void doLoop(void);
 
     void setTarget(float pos);     // set target position in degrees
@@ -43,7 +44,9 @@ class RotatorAxis {
 
   private:
     void doHoming(void);
+    static void handleTimeout(TimerHandle_t timer);
     enum HomingState { HS_INIT, HS_SEEK, HS_SEEKSTOP, HS_BACKOFF, HS_CREEP, HS_CREEPSTOP, HS_IDLE };
+    TimerHandle_t homingTimer;
     AccelStepper stepper;
     uint8_t endstopPin;
     bool homed = false;
