@@ -39,7 +39,6 @@ RotatorAxis::~RotatorAxis(void) {
 void RotatorAxis::doLoop(void) {
     stepper.run();
     if (!homed && homingState != HS_IDLE) doHoming();
-    if (homingState == HS_IDLE && stepper.isRunning() && getEndstop()) stepper.stop();
 }
 
 void RotatorAxis::doHoming(void) {
@@ -48,26 +47,26 @@ void RotatorAxis::doHoming(void) {
 
       case HS_INIT:
         if (getEndstop()) {
-            homingState = HS_BACKOFF;
+            setHomingState(HS_BACKOFF);
         } else {
             stepper.setMaxSpeed(speedMax);
             stepper.setAcceleration(accelMax);
             stepper.move(stepsPerRev * (posMin - posMax) / 360.);
-            homingState = HS_SEEK;
+            setHomingState(HS_SEEK);
         }
         break;
 
       case HS_SEEK:
         if (getEndstop()) {
             stepper.stop();
-            homingState = HS_SEEKSTOP;
+            setHomingState(HS_SEEKSTOP);
         }
         break;
 
       case HS_SEEKSTOP:
         if (!stepper.isRunning()) {
             stepper.move(stepsPerRev * HOMING_BACKOFF / 360.);
-            homingState = HS_BACKOFF;
+            setHomingState(HS_BACKOFF);
         }
         break;
 
@@ -76,14 +75,14 @@ void RotatorAxis::doHoming(void) {
             stepper.setMaxSpeed(speedMax / 4);
             stepper.setAcceleration(accelMax);
             stepper.move(stepsPerRev * (-1.5 * HOMING_BACKOFF) / 360.);
-            homingState = HS_CREEP;
+            setHomingState(HS_CREEP);
         }
         break;
 
       case HS_CREEP:
         if (getEndstop()) {
             stepper.stop();
-            homingState = HS_CREEPSTOP;
+            setHomingState(HS_CREEPSTOP);
         }
         break;
 
@@ -91,9 +90,17 @@ void RotatorAxis::doHoming(void) {
         if (!stepper.isRunning()) {
             stepper.setCurrentPosition(stepsPerRev * posMin / 360.);
             xTimerStop(homingTimer, 0);
-            homingState = HS_IDLE;
+            setHomingState(HS_IDLE);
             homed = true;
         }
+    }
+}
+
+void RotatorAxis::setHomingState(HomingState state) {
+    const char *s[] = {"INIT", "SEEK", "SEEKSTOP", "BACKOFF", "CREEP", "CREEPSTOP", "IDLE"};
+    if (state < HS_MAX) {
+        Serial.printf("Axis homing %s\n", s[state]);
+        homingState = state;
     }
 }
 
@@ -101,7 +108,7 @@ void RotatorAxis::handleTimeout(TimerHandle_t timer) {
     RotatorAxis *axis = (RotatorAxis*)pvTimerGetTimerID(timer);
     if (axis != nullptr) {
         axis->stepper.stop();
-        axis->homingState = HS_IDLE;
+        axis->setHomingState(HS_IDLE);
         axis->homed = false;
     }
 }
@@ -124,9 +131,14 @@ bool RotatorAxis::getEndstop(void) {
 }
 
 void RotatorAxis::home(void) {
+#ifdef DISABLE_HOMING
+    stepper.setCurrentPosition(stepsPerRev * posMin / 360.);
+    homed = true;
+#else
     xTimerStart(homingTimer, 0);
     homed = false;
-    homingState = HS_INIT;
+    setHomingState(HS_INIT);
+#endif
 }
 
 void RotatorAxis::stop(void) {

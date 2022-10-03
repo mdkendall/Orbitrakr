@@ -45,7 +45,8 @@ class RotatorAxis {
   private:
     void doHoming(void);
     static void handleTimeout(TimerHandle_t timer);
-    enum HomingState { HS_INIT, HS_SEEK, HS_SEEKSTOP, HS_BACKOFF, HS_CREEP, HS_CREEPSTOP, HS_IDLE };
+    enum HomingState { HS_INIT, HS_SEEK, HS_SEEKSTOP, HS_BACKOFF, HS_CREEP, HS_CREEPSTOP, HS_IDLE, HS_MAX };
+    void setHomingState(HomingState state);
     TimerHandle_t homingTimer;
     AccelStepper stepper;
     uint8_t endstopPin;
